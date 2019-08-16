@@ -1,0 +1,23 @@
+{
+  "name": "mixcapsule",
+  "version": "1.0.0",
+  "description": "A script to make a time capsule playlist of your most played Spotify tracks for the last month",
+  "main": "server/app.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/P-bibs/MixCapsule.git"
+  },
+  "author": "P-bibs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/P-bibs/MixCapsule/issues"
+  },
+  "homepage": "https://github.com/P-bibs/MixCapsule#readme"
+}
