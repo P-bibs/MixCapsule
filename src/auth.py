@@ -24,7 +24,7 @@ def request_token(id, secret, code, redirect):
         if response.status_code == 400:
             print("ERROR: Your auth token is expired. Get a new one at http:/localhost:3000")
         else:
-            print("ERROR: error when requesting token with code -- status code " + str(request.status_code))
+            print("ERROR: error when requesting token with code -- status code " + str(response.status_code))
             print(response.reason)
             print(response.text)
         return
@@ -49,7 +49,7 @@ def request_refresh(id, secret, refresh_token):
     )
 
     if response.status_code != 200:
-        print("ERROR: error when requesting token with code -- status code " + str(request.status_code))
+        print("ERROR: error when requesting token with code -- status code " + str(response.status_code))
         print(response.reason)
         print(response.text)
         return

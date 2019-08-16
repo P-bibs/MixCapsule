@@ -16,7 +16,7 @@ def get_top_tracks(token):
     response = requests.get(url, headers=headers, params=query)
 
     if response.status_code != 200:
-        print("ERROR: error when requesting top tracks with code -- status code " + str(request.status_code))
+        print("ERROR: error when requesting top tracks with code -- status code " + str(response.status_code))
         print(response.reason)
         print(response.text)
         return
