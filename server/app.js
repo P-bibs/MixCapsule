@@ -1,63 +1,57 @@
+// Imports
 var fs = require('fs')
 var express = require('express');
+const mongoose = require('mongoose');
+const {OAuth2Client} = require('google-auth-library');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+// Initialize globals
 var app = express();
+const port = 3000
 
-app.get('/', function(req, res){
+mongoose.connect('mongodb://localhost:27017', {useNewUrlParser: true, useUnifiedTopology: true});
 
-    let config = JSON.parse(fs.readFileSync(__dirname + "/../config.json", 'utf8'));
+CLIENT_ID = "701121595899-aqsiqmiqfl58n3uup5ojss0pam6638q7.apps.googleusercontent.com"
+const client = new OAuth2Client(CLIENT_ID);
 
-    id = config.SETUP.id
-    redirect_uri = config.SETUP.redirect
-    scope = config.SETUP.scope
+// Routes
+app.get('/MixCapsule', (req, res) => {
+  console.log("GET /MixCapsule")
+  res.sendFile('index.html', {root: __dirname })
+  //res.send('Hello World!')
+})
 
-    var base = "https://accounts.spotify.com/authorize";
-    var payload = {
-        client_id: id,
-        response_type: 'code',
-        redirect_uri: redirect_uri,
-        scope: scope
-    };
+app.post('/MixCapsule/userAuth', (req, res) => {
+  console.log("GET /MixCapsule/userAuth")
+  idToken = req.body.idtoken
+  verify(idToken).catch(console.error);
+  res.send('Hello World!')
+})
 
-    var esc = encodeURIComponent;
-    var query = Object.keys(payload)
-        .map(k => esc(k) + '=' + esc(payload[k]))
-        .join('&');
+app.get('/MixCapsule/authenticated', (req, res) => {
+  console.log("GET /MixCapsule/authenticated")
+  res.send('Hello World!')
+})
 
-    console.log("Query: " + query);
-    auth_uri = base + "?" + query
-
-    return res.redirect(auth_uri)
+server.configure(function(){
+  server.use('/resources', express.static(__dirname + '/resources'));
+  server.use(express.static(__dirname + '/public'));
 });
 
-
-app.get('/authenticated', function(req, res) {
-    let code = req.query.code
-    writeCode(code)
-    res.send("You may now close this page")
-});
-
-app.listen(3000, function() {
-  console.log('App listening on port 3000!');
-});
-
-//Change this function when switching from dev to build
-function writeCode(code) {
-
-    var obj = JSON.parse(fs.readFileSync(__dirname + "/../config.json", 'utf8'));
-
-    obj.DATA = {...obj.DATA, code: code}
-
-    json = JSON.stringify(obj, null, 4)
-
-    console.log("writing json to file")
-    console.log(json)
-
-    fs.writeFile(__dirname + "/../config.json", json, 'utf8', function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        else{
-            console.log("The file was saved!");
-        }
-    });
+async function verify(idToken) {
+  const ticket = await client.verifyIdToken({
+    idToken: idToken,
+    audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+    // Or, if multiple clients access the backend:
+    //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+  });
+  const payload = ticket.getPayload();
+  const userid = payload['sub'];
+  console.log("Response from verify")
+  console.log(payload)
+  // If request specified a G Suite domain:
+  //const domain = payload['hd'];
 }
+
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))

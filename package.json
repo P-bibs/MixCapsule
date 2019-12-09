@@ -4,11 +4,17 @@
   "description": "A script to make a time capsule playlist of your most played Spotify tracks for the last month",
   "main": "server/app.js",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "google-auth-library": "^5.5.1",
+    "mongoose": "^5.7.12",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node server/app.js"
+    "deploy": "./build.sh && ./send.sh",
+    "build": "./build.sh",
+    "send": "./send.sh",
+    "clean": "rm -rf ./build/*"
   },
   "repository": {
     "type": "git",

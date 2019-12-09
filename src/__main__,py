@@ -5,7 +5,7 @@ import datetime
 import auth, spotify_wrapper
 
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 with open(dir_path + '/../config.json') as f:
     config = json.load(f)
