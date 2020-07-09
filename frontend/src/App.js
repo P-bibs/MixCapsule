@@ -1,9 +1,9 @@
 import React from 'react';
-import PageController from './PageController.js'
+import PageRouter from './PageRouter.js'
 
 function App() {
   return (
-      <PageController />
+      <PageRouter />
   );
 }
 
