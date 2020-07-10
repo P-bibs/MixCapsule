@@ -134,3 +134,12 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = ['http://localhost:3000'] if DEBUG else ['mixcapsule.paulbiberstein.me']
 
 AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]
+
+# USER SETTINGS
+API_PATH = "http://localhost:8000" if DEBUG else "https://api.mixcapsule.paulbiberstein.me"
+APP_PATH = "http://localhost:3000" if DEBUG else "https://mixcapsule.paulbiberstein.me"
+
+SPOTIFY_CLIENT_ID = "d4027e74192f44a3a96139dc6d941b9c"
+SPOTIFY_CLIENT_SECRET = "53fef40b701044aba7fc8c7252e920dd"
+REDIRECT_URI = "%s/app" % APP_PATH
+SCOPES ="user-top-read user-read-recently-played playlist-modify-private"

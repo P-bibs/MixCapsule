@@ -1,18 +1,16 @@
-from datetime import date
-from django.http import JsonResponse
-from django.middleware.csrf import get_token
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from google.oauth2 import id_token
-from google.auth.transport import requests
+from google.auth.transport import requests as google_requests
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.conf import settings
+import json
+import requests
 
 from api.models import SpotifyApiData
 
@@ -34,6 +32,40 @@ class HasSpotifyAuthentication(APIView):
             spotify_api_data = user.spotifyapidata_set.all()[0]
             has_spotify_authentication = spotify_api_data.refresh_token != ""
             return Response(has_spotify_authentication)
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
+
+class RequestSpotifyTokens(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        user = request.user
+        code = request.data["code"]
+
+        if user is not None:
+            CLIENT_ID = settings.SPOTIFY_CLIENT_ID
+            CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
+            auth_bytes = "{CLIENT{CLIENT_ID}:{CLIENT_SECRET}".encode("ascii")
+            REDIRECT_URI = settings.REDIRECT_URI
+
+            print(REDIRECT_URI)
+            response = requests.post(
+            "https://accounts.spotify.com/api/token",
+                data={
+                    'grant_type': 'authorization_code',
+                    'code': code,
+                    'redirect_uri': REDIRECT_URI,
+                    'client_id': CLIENT_ID,
+                    'client_secret': CLIENT_SECRET
+                }
+            )
+            response_data = response.json()
+            user_spotify_data = user.spotifyapidata_set.all()[0]
+            user_spotify_data.refresh_token = response_data["refresh_token"]
+            user_spotify_data.access_token = response_data["access_token"]
+            user_spotify_data.save()
+
+            return Response()
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
@@ -73,7 +105,7 @@ def verify_google_jwt(token):
     # ...
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
 
         # Or, if multiple clients access the backend server:
         # idinfo = id_token.verify_oauth2_token(token, requests.Request())
@@ -92,5 +124,3 @@ def verify_google_jwt(token):
         return idinfo
     except ValueError:
         return False
-
-

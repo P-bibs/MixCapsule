@@ -26,6 +26,7 @@ from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("has-spotify-authentication", views.HasSpotifyAuthentication.as_view()),
+    path("request-spotify-tokens", views.RequestSpotifyTokens.as_view()),
     path('token/request', views.request_token),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

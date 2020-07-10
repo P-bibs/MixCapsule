@@ -6,23 +6,8 @@ export default class ApiWrapper {
     this.accessToken = accessToken;
   }
 
-  async requestSpotifyTokens(code) {
-    const response = fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(`${constants.SPOTIFY_CLIENT_ID}:${clientSecret}`),
-      },
-      // redirect: "follow",
-      body: {
-        code: code,
-        redirect_uri: constants.REDIRECT_URI,
-      },
-    });
-  }
-
   async makeRequest(endpoint, payload, method) {
-    const response = await fetch(API_PATH + endpoint, {
+    const response = await fetch(constants.API_PATH + endpoint, {
       method: method,
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +41,7 @@ export default class ApiWrapper {
     const payload = {
       refresh: this.refreshToken,
     };
-    const response = await fetch(API_PATH + "/token/refresh", {
+    const response = await fetch(constants.API_PATH + "/token/refresh", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

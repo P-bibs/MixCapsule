@@ -17,7 +17,7 @@ export default class AppPage extends React.Component {
       hasSpotifyAuthentication: "test",
     };
 
-    this.this.checkForAndSendSpotifyCode();
+    this.checkForAndSendSpotifyCode();
   }
 
   componentDidMount() {
@@ -37,22 +37,17 @@ export default class AppPage extends React.Component {
 
   checkForAndSendSpotifyCode = () => {
     // Search for spotify access token in case we've just been redirected
-    if (window.location.hash.includes("code")) {
-      const hashFragment = window.location.hash.substr(1);
-      let spotifyCode;
-      try {
-        spotifyCode = hashFragment.split("&")[0].split("=")[1];
-      } catch {
-        return;
-      }
+    const params = new URL(window.location).searchParams;
+    if (params.has("code")) {
+      const spotifyCode = params.get("code");
+      console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.apiWrapper
-        .makeRequest("/requestSpotifyTokens", { code: spotifyCode }, "POST")
+        .makeRequest("/request-spotify-tokens", { code: spotifyCode }, "POST")
         .then((response) => {
-          return response.json();
+          if (response.status == 200) {
+            this.setState({hasSpotifyAuthentication: true})
+          }
         })
-        .then((data) => {
-          console.log(data);
-        });
     } else if (window.location.hash.includes("error")) {
       console.error(window.location.hash);
     }
