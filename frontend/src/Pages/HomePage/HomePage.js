@@ -41,7 +41,7 @@ export default class HomePage extends React.Component {
       <div className="home-page">
         <div className="header">
           <div className="product-name header-item" href="/">
-            <a className="home-link" href="/MixCapsule">
+            <a className="home-link" href="/">
               MixCapsule
             </a>
           </div>
@@ -58,6 +58,7 @@ export default class HomePage extends React.Component {
           <br />
           <br />
           Get started by signing in with Google
+          <br />
           <br />
           <GoogleLogin
             clientId="701121595899-aqsiqmiqfl58n3uup5ojss0pam6638q7.apps.googleusercontent.com"
