@@ -131,4 +131,6 @@ REST_FRAMEWORK = {
 }
 
 # change to app.example.com in production settings
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000'] if DEBUG else ['api.mixcapsule.paulbiberstein.me']
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000'] if DEBUG else ['mixcapsule.paulbiberstein.me']
+
+AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]

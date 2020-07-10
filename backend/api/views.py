@@ -1,44 +1,44 @@
+from datetime import date
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from api.models import User
 from django.contrib.auth.models import User
-# from api.serializers import UserSerializer
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from api.models import SpotifyApiData
+
+# @api_view(['GET'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])
+# @permission_classes([IsAuthenticated])
 
 
-@api_view(['GET', 'POST'])
-def user_list(request):
-    """
-    List all users, or create a new user.
-    """
-    if request.method == 'GET':
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
-
-def ping(request):
-    return JsonResponse({'result': 'OK'})
+class HasSpotifyAuthentication(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        user = request.user
+        if user is not None:
+            # extract first field of the two-tuple (user, token)
+            # user = user[0]
+            if len(user.spotifyapidata_set.all()) == 0:
+                raise Exception("Error: users spotify data does not exist")
+            spotify_api_data = user.spotifyapidata_set.all()[0]
+            has_spotify_authentication = spotify_api_data.refresh_token != ""
+            return Response(has_spotify_authentication)
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
 
 @api_view(['POST'])
 def request_token(request):
-    print(request.data)
     google_token = request.data["google_token"]
 
     token_info = verify_google_jwt(google_token)
@@ -47,9 +47,16 @@ def request_token(request):
 
         # If this is a new user, create an entry for them
         if len(user) == 0:
-            new_user = User.objects.create_user(token_info["name"], token_info["email"], "")
+            new_user = User.objects.create_user(token_info["email"], token_info["email"], "")
             new_user.set_unusable_password()
             new_user.save()
+
+            new_user_data = SpotifyApiData()
+            new_user_data.user = new_user
+            new_user_data.refresh_token = ""
+            new_user_data.access_token = ""
+            new_user_data.save()
+
             user = new_user
         else:
             user = user[0]
@@ -82,7 +89,6 @@ def verify_google_jwt(token):
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         userid = idinfo['sub']
-        print(idinfo)
         return idinfo
     except ValueError:
         return False
