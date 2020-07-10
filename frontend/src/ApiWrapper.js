@@ -1,9 +1,24 @@
-import { API_PATH } from "./constants";
+import * as constants from "./constants";
 
 export default class ApiWrapper {
-  constructor(accessToken, refreshToken) {
-    this.accessToken = accessToken;
+  constructor(refreshToken, accessToken) {
     this.refreshToken = refreshToken;
+    this.accessToken = accessToken;
+  }
+
+  async requestSpotifyTokens(code) {
+    const response = fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Basic " + btoa(`${constants.SPOTIFY_CLIENT_ID}:${clientSecret}`),
+      },
+      // redirect: "follow",
+      body: {
+        code: code,
+        redirect_uri: constants.REDIRECT_URI,
+      },
+    });
   }
 
   async makeRequest(endpoint, payload, method) {
@@ -11,18 +26,19 @@ export default class ApiWrapper {
       method: method,
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + this.accessToken,
       },
-      redirect: "follow",
+      // redirect: "follow",
       body: JSON.stringify(payload),
     });
 
-    if (response.status !== 400) {
+    if (response.status !== 200) {
       console.error(
         `ERROR when accessing endpoint ${endpoint} with payload ${payload} and method ${method}`
       );
       console.log(response);
       // If the request failed because of an expired access token, get a new one
-      if (response.reason === "expired access token") {
+      if (response.status === 401) {
         if (await this.requestNewAccessToken()) {
           // After we have a new access token, make the request again
           return await this.makeRequest(endpoint, payload, method);
@@ -45,17 +61,19 @@ export default class ApiWrapper {
       headers: {
         "Content-Type": "application/json",
       },
-      redirect: "follow",
+      // redirect: "follow",
       body: JSON.stringify(payload),
     });
     // If refreshing the access token causes errors, log them
-    if (response.status !== 400) {
+    if (response.status !== 200) {
       console.error("ERROR when refreshing access token");
       console.log(response);
       return false;
     } else {
       // update this objects access token and return successfully
       const body = await response.json();
+      console.log(`Received refreshed token`);
+      console.log(body);
       const newAccessToken = body.access;
       this.accessToken = newAccessToken;
       console.log("refreshed token successfully");

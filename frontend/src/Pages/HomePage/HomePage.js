@@ -30,15 +30,15 @@ export default class HomePage extends React.Component {
       })
       .then((body) => {
         console.log(body);
-        localStorage.setItem("accessToken", JSON.stringify(body.access));
-        localStorage.setItem("refreshToken", JSON.stringify(body.refresh));
+        localStorage.setItem("accessToken", body.access);
+        localStorage.setItem("refreshToken", body.refresh);
         window.location.href = "/app";
       });
   }
 
   render() {
     return (
-      <body>
+      <div className="home-page">
         <div className="header">
           <div className="product-name header-item" href="/">
             <a className="home-link" href="/MixCapsule">
@@ -66,7 +66,7 @@ export default class HomePage extends React.Component {
           />
         </div>
         <div className="footer"></div>
-      </body>
+      </div>
     );
   }
 }
