@@ -6,6 +6,26 @@ export default class ApiWrapper {
     this.accessToken = accessToken;
   }
 
+  static async makeRequestWithoutAuthentication(endpoint, payload, method) {
+    const response = await fetch(constants.API_PATH + endpoint, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // redirect: "follow",
+      body: JSON.stringify(payload),
+    });
+
+    if (response.status !== 200) {
+      console.error(
+        `ERROR when accessing endpoint ${endpoint} with payload ${payload} and method ${method}`
+      );
+      console.log(response);
+    } else {
+      return response;
+    }
+  }
+  
   async makeRequest(endpoint, payload, method) {
     const response = await fetch(constants.API_PATH + endpoint, {
       method: method,
@@ -41,7 +61,7 @@ export default class ApiWrapper {
     const payload = {
       refresh: this.refreshToken,
     };
-    const response = await fetch(constants.API_PATH + "/token/refresh", {
+    const response = await fetch(constants.API_PATH + "/token/refresh/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import React from "react";
 import GoogleLogin from "react-google-login";
 
 import { DEBUG, API_PATH, APP_PATH } from "../../constants";
+import ApiWrapper from "../../ApiWrapper";
 import "./HomePage.css";
 
 export default class HomePage extends React.Component {
@@ -16,14 +17,11 @@ export default class HomePage extends React.Component {
     const payload = {
       google_token: googleUser.getAuthResponse().id_token,
     };
-    fetch(`${API_PATH}/token/request/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      body: JSON.stringify(payload),
-    })
+    ApiWrapper.makeRequestWithoutAuthentication(
+      "/token/request/",
+      payload,
+      "POST"
+    )
       .then((response) => {
         console.log(response);
         return response.json();
