@@ -26,20 +26,15 @@ export default class AppPage extends React.Component {
 
   componentDidMount() {
     this.setState({ isLoading: true });
-    this.apiWrapper
-      .makeRequest("/spotify/authentication/")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        const authenticationDate = data["authentication_date"];
-        const hasSpotifyAuthentication = authenticationDate !== null;
-        this.setState({
-          isLoading: false,
-          hasSpotifyAuthentication: hasSpotifyAuthentication,
-        });
+    this.apiWrapper.makeRequest("/spotify/authentication/").then(([data, _]) => {
+      console.log(data);
+      const authenticationDate = data["authentication_date"];
+      const hasSpotifyAuthentication = authenticationDate !== null;
+      this.setState({
+        isLoading: false,
+        hasSpotifyAuthentication: hasSpotifyAuthentication,
       });
+    });
   }
 
   redirectToSpotify = () => {
@@ -61,7 +56,7 @@ export default class AppPage extends React.Component {
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.apiWrapper
         .makeRequest("/spotify/authentication/", { code: spotifyCode }, "POST")
-        .then((response) => {
+        .then(([_, response]) => {
           if (response.status === 200) {
             this.setState({ hasSpotifyAuthentication: true });
           }
@@ -76,9 +71,11 @@ export default class AppPage extends React.Component {
   };
 
   manualPlaylistCreation = () => {
-    this.apiWrapper.makeRequest("/playlist/", {}, "POST").then((response) => {
-      console.log(response);
-    });
+    this.apiWrapper
+      .makeRequest("/playlist/", {}, "POST")
+      .then(([data, response]) => {
+        console.log(response);
+      });
   };
 
   render() {

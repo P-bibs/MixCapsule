@@ -22,10 +22,11 @@ export default class ApiWrapper {
       );
       console.log(response);
     } else {
-      return response;
+      const decodedBody = await response.json();
+      return [decodedBody, response];
     }
   }
-  
+
   async makeRequest(endpoint, payload, method) {
     const response = await fetch(constants.API_PATH + endpoint, {
       method: method,
@@ -53,7 +54,8 @@ export default class ApiWrapper {
         }
       }
     } else {
-      return response;
+      const decodedBody = await response.json();
+      return [decodedBody, response];
     }
   }
 

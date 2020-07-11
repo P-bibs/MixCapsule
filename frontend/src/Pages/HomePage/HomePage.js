@@ -21,17 +21,12 @@ export default class HomePage extends React.Component {
       "/token/request/",
       payload,
       "POST"
-    )
-      .then((response) => {
-        console.log(response);
-        return response.json();
-      })
-      .then((body) => {
-        console.log(body);
-        localStorage.setItem("accessToken", body.access);
-        localStorage.setItem("refreshToken", body.refresh);
-        window.location.href = "/app";
-      });
+    ).then(([data, response]) => {
+      console.log(data);
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      window.location.href = "/app";
+    });
   }
 
   render() {
