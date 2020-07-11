@@ -27,14 +27,17 @@ export default class AppPage extends React.Component {
   componentDidMount() {
     this.setState({ isLoading: true });
     this.apiWrapper
-      .makeRequest("/has-spotify-authentication")
+      .makeRequest("/spotify/authentication/")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
+        console.log(data);
+        const authenticationDate = data["authentication_date"];
+        const hasSpotifyAuthentication = authenticationDate !== null;
         this.setState({
           isLoading: false,
-          hasSpotifyAuthentication: data.toString(),
+          hasSpotifyAuthentication: hasSpotifyAuthentication,
         });
       });
   }
@@ -57,10 +60,10 @@ export default class AppPage extends React.Component {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.apiWrapper
-        .makeRequest("/request-spotify-tokens", { code: spotifyCode }, "POST")
+        .makeRequest("/spotify/authentication/", { code: spotifyCode }, "POST")
         .then((response) => {
           if (response.status === 200) {
-            this.setState({ hasSpotifyAuthentication: "true" });
+            this.setState({ hasSpotifyAuthentication: true });
           }
         });
     } else if (window.location.hash.includes("error")) {
@@ -73,7 +76,7 @@ export default class AppPage extends React.Component {
   };
 
   manualPlaylistCreation = () => {
-    this.apiWrapper.makeRequest("/playlist/create").then((response) => {
+    this.apiWrapper.makeRequest("/playlist/", {}, "POST").then((response) => {
       console.log(response);
     });
   };
@@ -91,32 +94,50 @@ export default class AppPage extends React.Component {
         </div>
         <div className="app-page-body">
           <div className="sidebar">
-            <div className="option" onClick={() => this.setState({selectedIndex: 0})}>Spotify Authentication</div>
-            <div className="option" onClick={() => this.setState({selectedIndex: 1})}>Options</div>
-            <div className="option" onClick={() => this.setState({selectedIndex: 2})}>Manual Creation</div>
+            <div
+              className="option"
+              onClick={() => this.setState({ selectedIndex: 0 })}
+            >
+              Spotify Authentication
+            </div>
+            <div
+              className="option"
+              onClick={() => this.setState({ selectedIndex: 1 })}
+            >
+              Options
+            </div>
+            <div
+              className="option"
+              onClick={() => this.setState({ selectedIndex: 2 })}
+            >
+              Manual Creation
+            </div>
           </div>
           <div className="main-panel">
             {this.state.isLoading ? (
-              <p>
+              <div>
                 <CircularProgress />
-              </p>
+              </div>
             ) : this.state.selectedIndex === 0 ? (
               <>
                 <h2>
                   Spotify Authentication Status:{" "}
-                  {this.state.hasSpotifyAuthentication === "true" ? (
+                  {this.state.hasSpotifyAuthentication ? (
                     <CheckIcon />
                   ) : (
                     <CloseIcon />
                   )}
                 </h2>
-                <p>
-                  {this.state.hasSpotifyAuthentication === "true"
+                <div>
+                  {this.state.hasSpotifyAuthentication
                     ? "You've successfully authenticated with Spotify, and will have a MixCapsule playlist created at the end of the month"
                     : "If you don't authenticate with Spotify, you won't have a MixCapsule playlist generated for you at the end of the month"}
-                </p>
-                <Button variant="contained" onClick={() => this.redirectToSpotify()}>
-                  {this.state.hasSpotifyAuthentication === "true"
+                </div>
+                <Button
+                  variant="contained"
+                  onClick={() => this.redirectToSpotify()}
+                >
+                  {this.state.hasSpotifyAuthentication
                     ? "Re-Authenticate"
                     : "Authenticate"}
                 </Button>
@@ -133,10 +154,13 @@ export default class AppPage extends React.Component {
                 />
                 <br />
 
-                <Button variant="contained" onClick={() => {}}>Apply</Button>
+                <Button variant="contained" onClick={() => {}}>
+                  Apply
+                </Button>
               </>
             ) : (
-              <Button variant="contained"
+              <Button
+                variant="contained"
                 onClick={() => {
                   this.manualPlaylistCreation();
                 }}

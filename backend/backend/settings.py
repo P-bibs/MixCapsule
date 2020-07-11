@@ -143,3 +143,5 @@ SPOTIFY_CLIENT_ID = "d4027e74192f44a3a96139dc6d941b9c"
 SPOTIFY_CLIENT_SECRET = "53fef40b701044aba7fc8c7252e920dd"
 REDIRECT_URI = "%s/app" % APP_PATH
 SCOPES ="user-top-read user-read-recently-played playlist-modify-private"
+
+GOOGLE_CLIENT_ID = "701121595899-aqsiqmiqfl58n3uup5ojss0pam6638q7.apps.googleusercontent.com"

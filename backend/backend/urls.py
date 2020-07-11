@@ -21,15 +21,17 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
-from api import views 
+from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("has-spotify-authentication", views.HasSpotifyAuthentication.as_view()),
-    path("request-spotify-tokens", views.RequestSpotifyTokens.as_view()),
-    path("playlist/create", views.PlaylistManualCreation.as_view()),
-    path('token/request', views.request_token),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path("has-spotify-authentication", views.HasSpotifyAuthentication.as_view()),
+    # path("request-spotify-tokens", views.RequestSpotifyTokens.as_view()),
+    # path("playlist/create", views.PlaylistManualCreation.as_view()),
+    path("spotify/authentication/", views.SpotifyAuthentication.as_view()),
+    path("playlist/options/", views.PlaylistOptionsDetail.as_view()),
+    path("playlist/", views.Playlist.as_view()),
+    path("user/", views.UserDetail.as_view()),
+    path('token/request/', views.TokenRequest.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]

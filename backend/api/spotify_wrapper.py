@@ -1,6 +1,30 @@
 import json
 import requests
 
+def request_refresh(id, secret, refresh_token):
+    print('requesting a token')
+
+
+    response = requests.post(
+        "https://accounts.spotify.com/api/token",
+        data={
+            'grant_type': 'refresh_token',
+            'refresh_token': refresh_token,
+            'client_id': id,
+            'client_secret': secret
+        }
+    )
+
+    if response.status_code != 200:
+        print("ERROR: error when requesting token with code -- status code " + str(response.status_code))
+        print(response.reason)
+        print(response.text)
+        return
+
+    print('Received OK response for token refresh')
+
+    return json.loads(response.text)
+
 def get_top_tracks(token):
     """Returns top 50 tracks over last four weeks"""
 

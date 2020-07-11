@@ -16,7 +16,7 @@ export default class HomePage extends React.Component {
     const payload = {
       google_token: googleUser.getAuthResponse().id_token,
     };
-    fetch(`${API_PATH}/token/request`, {
+    fetch(`${API_PATH}/token/request/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
