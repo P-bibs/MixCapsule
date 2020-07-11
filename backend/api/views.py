@@ -1,19 +1,23 @@
+import datetime
+
+import requests
+from django.conf import settings
+from django.contrib.auth.models import User
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from django.conf import settings
-from rest_framework import generics
-import datetime
-import requests
-from api.models import SpotifyApiData, PlaylistOptions
-from api.serializers import UserSerializer, SpotifyApiDataSerializer, PlaylistOptionsSerializer
-from api.spotify_wrapper import request_refresh, get_top_tracks, create_playlist, add_tracks_to_playlist
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.models import PlaylistOptions, SpotifyApiData
+from api.serializers import (PlaylistOptionsSerializer,
+                             SpotifyApiDataSerializer, UserSerializer)
+from api.spotify_wrapper import (add_tracks_to_playlist, create_playlist,
+                                 get_top_tracks, request_refresh)
+
 
 class SpotifyAuthentication(APIView):
     authentication_classes = [JWTAuthentication]
@@ -38,7 +42,6 @@ class SpotifyAuthentication(APIView):
         if user is not None:
             CLIENT_ID = settings.SPOTIFY_CLIENT_ID
             CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
-            auth_bytes = "{CLIENT{CLIENT_ID}:{CLIENT_SECRET}".encode("ascii")
             REDIRECT_URI = settings.REDIRECT_URI
 
             print(REDIRECT_URI)
@@ -99,8 +102,6 @@ class TokenRequest(APIView):
 
 def verify_google_jwt(token):
     CLIENT_ID = settings.GOOGLE_CLIENT_ID
-    # (Receive token by HTTPS POST)
-    # ...
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
         idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
@@ -117,8 +118,6 @@ def verify_google_jwt(token):
         # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
         #     raise ValueError('Wrong hosted domain.')
 
-        # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo['sub']
         return idinfo
     except ValueError:
         return False
@@ -133,7 +132,7 @@ class Playlist(APIView):
             user_spotify_data = user.spotifyapidata_set.all()[0]
             make_playlist(user_spotify_data)
 
-            return Response()
+            return Response({})
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
@@ -167,5 +166,3 @@ def make_playlist(SpotifyApiData):
     playlist_id = create_playlist(token, str(month) + "/" + str(year) + " MixCapsule")
 
     add_tracks_to_playlist(token, playlist_id, top_track_uris)
-
-

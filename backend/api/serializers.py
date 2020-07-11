@@ -1,6 +1,8 @@
-from api.models import PlaylistOptions, SpotifyApiData
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from api.models import PlaylistOptions, SpotifyApiData
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

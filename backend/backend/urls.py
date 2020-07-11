@@ -16,18 +16,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView
-)
+from rest_framework_simplejwt.views import TokenRefreshView
+
 from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path("has-spotify-authentication", views.HasSpotifyAuthentication.as_view()),
-    # path("request-spotify-tokens", views.RequestSpotifyTokens.as_view()),
-    # path("playlist/create", views.PlaylistManualCreation.as_view()),
     path("spotify/authentication/", views.SpotifyAuthentication.as_view()),
     path("playlist/options/", views.PlaylistOptionsDetail.as_view()),
     path("playlist/", views.Playlist.as_view()),
