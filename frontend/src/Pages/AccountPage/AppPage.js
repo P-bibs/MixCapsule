@@ -4,9 +4,10 @@ import * as constants from "../../constants";
 import "./AppPage.css";
 import ApiWrapper from "../../ApiWrapper";
 import { generateRedirectUri } from "../../SpotifyApiWrapper";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
-import { CircularProgress, Button } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
+import SpotifyPanel from "./SpotifyPanel";
+import OptionsPanel from "./OptionsPanel";
+import ManualPanel from "./ManualPanel";
 
 export default class AppPage extends React.Component {
   constructor(props) {
@@ -26,15 +27,17 @@ export default class AppPage extends React.Component {
 
   componentDidMount() {
     this.setState({ isLoading: true });
-    this.apiWrapper.makeRequest("/spotify/authentication/").then(([data, _]) => {
-      console.log(data);
-      const authenticationDate = data["authentication_date"];
-      const hasSpotifyAuthentication = authenticationDate !== null;
-      this.setState({
-        isLoading: false,
-        hasSpotifyAuthentication: hasSpotifyAuthentication,
+    this.apiWrapper
+      .makeAuthenticatedRequest("/spotify/authentication/")
+      .then(([data, _]) => {
+        console.log(data);
+        const authenticationDate = data["authentication_date"];
+        const hasSpotifyAuthentication = authenticationDate !== null;
+        this.setState({
+          isLoading: false,
+          hasSpotifyAuthentication: hasSpotifyAuthentication,
+        });
       });
-    });
   }
 
   redirectToSpotify = () => {
@@ -55,7 +58,7 @@ export default class AppPage extends React.Component {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.apiWrapper
-        .makeRequest("/spotify/authentication/", { code: spotifyCode }, "POST")
+        .makeAuthenticatedRequest("/spotify/authentication/", { code: spotifyCode }, "POST")
         .then(([_, response]) => {
           if (response.status === 200) {
             this.setState({ hasSpotifyAuthentication: true });
@@ -72,7 +75,7 @@ export default class AppPage extends React.Component {
 
   manualPlaylistCreation = () => {
     this.apiWrapper
-      .makeRequest("/playlist/", {}, "POST")
+      .makeAuthenticatedRequest("/playlist/", {}, "POST")
       .then(([data, response]) => {
         console.log(response);
       });
@@ -116,54 +119,11 @@ export default class AppPage extends React.Component {
                 <CircularProgress />
               </div>
             ) : this.state.selectedIndex === 0 ? (
-              <>
-                <h2>
-                  Spotify Authentication Status:{" "}
-                  {this.state.hasSpotifyAuthentication ? (
-                    <CheckIcon />
-                  ) : (
-                    <CloseIcon />
-                  )}
-                </h2>
-                <div>
-                  {this.state.hasSpotifyAuthentication
-                    ? "You've successfully authenticated with Spotify, and will have a MixCapsule playlist created at the end of the month"
-                    : "If you don't authenticate with Spotify, you won't have a MixCapsule playlist generated for you at the end of the month"}
-                </div>
-                <Button
-                  variant="contained"
-                  onClick={() => this.redirectToSpotify()}
-                >
-                  {this.state.hasSpotifyAuthentication
-                    ? "Re-Authenticate"
-                    : "Authenticate"}
-                </Button>
-              </>
+              <SpotifyPanel apiWrapper={this.apiWrapper} />
             ) : this.state.selectedIndex === 1 ? (
-              <>
-                <h2>MixCapsule Options</h2>
-                <div>Number of Songs: </div>
-                <input
-                  onChange={(e) => {
-                    this.handleChange(e, "numSongs");
-                  }}
-                  value={this.state.numSongs}
-                />
-                <br />
-
-                <Button variant="contained" onClick={() => {}}>
-                  Apply
-                </Button>
-              </>
+              <OptionsPanel apiWrapper={this.apiWrapper} />
             ) : (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  this.manualPlaylistCreation();
-                }}
-              >
-                Trigger Manual Creation
-              </Button>
+              <ManualPanel apiWrapper={this.apiWrapper} />
             )}
           </div>
         </div>

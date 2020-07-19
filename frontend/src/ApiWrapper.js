@@ -6,14 +6,19 @@ export default class ApiWrapper {
     this.accessToken = accessToken;
   }
 
-  static async makeRequestWithoutAuthentication(endpoint, payload, method) {
+  static async makeRequest(
+    endpoint,
+    method = "GET",
+    payload = {},
+    headers = {}
+  ) {
     const response = await fetch(constants.API_PATH + endpoint, {
       method: method,
       headers: {
+        ...headers,
         "Content-Type": "application/json",
       },
-      // redirect: "follow",
-      body: JSON.stringify(payload),
+      body: method === "GET" ? null : JSON.stringify(payload),
     });
 
     if (response.status !== 200) {
@@ -27,35 +32,32 @@ export default class ApiWrapper {
     }
   }
 
-  async makeRequest(endpoint, payload, method) {
-    const response = await fetch(constants.API_PATH + endpoint, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + this.accessToken,
-      },
-      // redirect: "follow",
-      body: JSON.stringify(payload),
-    });
-
-    if (response.status !== 200) {
-      console.error(
-        `ERROR when accessing endpoint ${endpoint} with payload ${payload} and method ${method}`
-      );
-      console.log(response);
-      // If the request failed because of an expired access token, get a new one
-      if (response.status === 401) {
-        if (await this.requestNewAccessToken()) {
-          // After we have a new access token, make the request again
-          return await this.makeRequest(endpoint, payload, method);
-        } else {
-          // If the refresh token is expired too, then handle that case
-          this.handleExpiredRefreshToken();
-        }
+  async makeAuthenticatedRequest(
+    endpoint,
+    method = "GET",
+    payload = {},
+    headers = {}
+  ) {
+    const newHeaders = {
+      ...headers,
+      Authorization: "Bearer " + this.accessToken,
+    };
+    const [data, response] = await ApiWrapper.makeRequest(
+      endpoint,
+      method,
+      payload,
+      newHeaders
+    );
+    if (response.status === 401) {
+      if (await this.requestNewAccessToken()) {
+        // After we have a new access token, make the request again
+        return await this.makeAuthenticatedRequest(endpoint, payload, method);
+      } else {
+        // If the refresh token is expired too, then handle that case
+        this.handleExpiredRefreshToken();
       }
     } else {
-      const decodedBody = await response.json();
-      return [decodedBody, response];
+      return [data, response];
     }
   }
 
@@ -63,14 +65,11 @@ export default class ApiWrapper {
     const payload = {
       refresh: this.refreshToken,
     };
-    const response = await fetch(constants.API_PATH + "/token/refresh/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // redirect: "follow",
-      body: JSON.stringify(payload),
-    });
+    const [, response] = await ApiWrapper.makeRequest(
+      "/token/refresh/",
+      "POST",
+      payload
+    );
     // If refreshing the access token causes errors, log them
     if (response.status !== 200) {
       console.error("ERROR when refreshing access token");

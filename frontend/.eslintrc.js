@@ -35,6 +35,7 @@ module.exports = {
         singleQuote: false,
       },
     ],
+    "dot-notation": "off",
     "no-unused-vars": "warn",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",

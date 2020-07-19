@@ -1,7 +1,6 @@
 import React from "react";
 import GoogleLogin from "react-google-login";
 
-import { DEBUG, API_PATH, APP_PATH } from "../../constants";
 import ApiWrapper from "../../ApiWrapper";
 import "./HomePage.css";
 
@@ -17,16 +16,14 @@ export default class HomePage extends React.Component {
     const payload = {
       google_token: googleUser.getAuthResponse().id_token,
     };
-    ApiWrapper.makeRequestWithoutAuthentication(
-      "/token/request/",
-      payload,
-      "POST"
-    ).then(([data, response]) => {
-      console.log(data);
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-      window.location.href = "/app";
-    });
+    ApiWrapper.makeRequest("/token/request/", "POST", payload).then(
+      ([data, response]) => {
+        console.log(data);
+        localStorage.setItem("accessToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
+        window.location.href = "/app";
+      }
+    );
   }
 
   render() {
