@@ -20,13 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'mo=7q1g4dp-b)kzj687$7)c%x$0=ow+ip(#nc&0ew0^hik_!$w'
+SECRET_KEY = os.environ(["SECRET_KEY"])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [".paulbiberstein.me"]
 
 # Application definition
 
@@ -130,8 +129,12 @@ REST_FRAMEWORK = {
     )
 }
 
-# change to app.example.com in production settings
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000'] if DEBUG else ['mixcapsule.paulbiberstein.me']
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_REFERRER_POLICY = "origin"
+
+CORS_ORIGIN_WHITELIST = ['http://mixcapsule.paulbiberstein.me']
 
 AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]
 
@@ -139,5 +142,9 @@ API_PATH = os.environ["API_PATH"]
 APP_PATH = os.environ["APP_PATH"]
 SPOTIFY_CLIENT_ID = os.environ["SPOTIFY_CLIENT_ID"]
 SPOTIFY_CLIENT_SECRET = os.environ["SPOTIFY_CLIENT_SECRET"]
-RECIRECT_URI = os.environ["RECIRECT_URI"]
+REDIRECT_URI = os.environ["REDIRECT_URI"]
 SCOPES = os.environ["SCOPES"]
+
+# Override production variables if DJANGO_DEVELOPMENT env variable is set
+if os.environ.get('DJANGO_DEVELOPMENT'):
+    from backend.dev_settings import * 
