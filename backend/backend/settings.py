@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv(), verbose=True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ(["SECRET_KEY"])
+SECRET_KEY = os.environ["MIXCAPSULE_DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -133,18 +135,20 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = "origin"
-
-CORS_ORIGIN_WHITELIST = ['http://mixcapsule.paulbiberstein.me']
+SECURE_HSTS_SECONDS=3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]
 
-API_PATH = os.environ["API_PATH"]
-APP_PATH = os.environ["APP_PATH"]
-SPOTIFY_CLIENT_ID = os.environ["SPOTIFY_CLIENT_ID"]
-SPOTIFY_CLIENT_SECRET = os.environ["SPOTIFY_CLIENT_SECRET"]
-REDIRECT_URI = os.environ["REDIRECT_URI"]
-SCOPES = os.environ["SCOPES"]
+API_PATH = os.environ["MIXCAPSULE_API_PATH"]
+APP_PATH = os.environ["MIXCAPSULE_APP_PATH"]
+SPOTIFY_CLIENT_ID = os.environ["MIXCAPSULE_SPOTIFY_CLIENT_ID"]
+SPOTIFY_CLIENT_SECRET = os.environ["MIXCAPSULE_SPOTIFY_CLIENT_SECRET"]
+REDIRECT_URI = os.environ["MIXCAPSULE_REDIRECT_URI"]
+SCOPES = os.environ["MIXCAPSULE_SCOPES"]
+
+CORS_ORIGIN_WHITELIST = [APP_PATH]
 
 # Override production variables if DJANGO_DEVELOPMENT env variable is set
-if os.environ.get('DJANGO_DEVELOPMENT'):
+if os.environ.get('MIXCAPSULE_DJANGO_DEVELOPMENT'):
     from backend.dev_settings import * 
