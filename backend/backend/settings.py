@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv(), verbose=True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ["MIXCAPSULE_DJANGO_SECRET_KEY"]
+SECRET_KEY = os.getenv("MIXCAPSULE_DJANGO_SECRET_KEY")
+# print("SECRET KEY: %s" % SECRET_KEY)
+# raise Exception("" + str(SECRET_KEY))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api.apps.ApiConfig',
-    'corsheaders'
+    'corsheaders',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'database/db.sqlite3'),
     }
 }
 
@@ -140,15 +141,16 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]
 
-API_PATH = os.environ["MIXCAPSULE_API_PATH"]
-APP_PATH = os.environ["MIXCAPSULE_APP_PATH"]
-SPOTIFY_CLIENT_ID = os.environ["MIXCAPSULE_SPOTIFY_CLIENT_ID"]
-SPOTIFY_CLIENT_SECRET = os.environ["MIXCAPSULE_SPOTIFY_CLIENT_SECRET"]
-REDIRECT_URI = os.environ["MIXCAPSULE_REDIRECT_URI"]
-SCOPES = os.environ["MIXCAPSULE_SCOPES"]
+API_PATH = os.getenv("MIXCAPSULE_API_PATH")
+APP_PATH = os.getenv("MIXCAPSULE_APP_PATH")
+SPOTIFY_CLIENT_ID = os.getenv("MIXCAPSULE_SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.getenv("MIXCAPSULE_SPOTIFY_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("MIXCAPSULE_REDIRECT_URI")
+SCOPES = os.getenv("MIXCAPSULE_SCOPES")
+GOOGLE_CLIENT_ID = os.getenv("MIXCAPSULE_GOOGLE_CLIENT_ID")
 
 CORS_ORIGIN_WHITELIST = [APP_PATH]
 
 # Override production variables if DJANGO_DEVELOPMENT env variable is set
-if os.environ.get('MIXCAPSULE_DJANGO_DEVELOPMENT'):
+if os.getenv('MIXCAPSULE_DJANGO_DEVELOPMENT'):
     from backend.dev_settings import * 

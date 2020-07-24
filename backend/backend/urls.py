@@ -28,4 +28,5 @@ urlpatterns = [
     path("user/", views.UserDetail.as_view()),
     path('token/request/', views.TokenRequest.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('healthcheck', views.HealthCheck.as_view())
 ]

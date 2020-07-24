@@ -3,6 +3,7 @@ import datetime
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from rest_framework import generics
@@ -18,6 +19,9 @@ from api.serializers import (PlaylistOptionsSerializer,
 from api.spotify_wrapper import (add_tracks_to_playlist, create_playlist,
                                  get_top_tracks, request_refresh)
 
+class HealthCheck(APIView):
+    def get(self, request):
+        return Response("OK")
 
 class SpotifyAuthentication(APIView):
     authentication_classes = [JWTAuthentication]
@@ -26,12 +30,13 @@ class SpotifyAuthentication(APIView):
     def get(self, request):
         user = request.user
         if user is not None:
-            if len(user.spotifyapidata_set.all()) == 0:
-                raise Exception("Error: users spotify data does not exist")
-            spotify_api_data = user.spotifyapidata_set.all()[0]
-            return Response(
-                SpotifyApiDataSerializer(spotify_api_data).data
-            )
+            try:
+                spotify_api_data = user.spotifyapidata
+                return Response(
+                    SpotifyApiDataSerializer(spotify_api_data).data
+                )
+            except ObjectDoesNotExist:
+                raise Exception("Error: users spotify api data does not exist")
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
@@ -59,13 +64,13 @@ class SpotifyAuthentication(APIView):
             print(response_data)
             if "error" in response_data:
                 return Response({"error": "Spotify API error: " + response_data["error_description"]}, status=400)
-            user_spotify_data = user.spotifyapidata_set.all()[0]
+            user_spotify_data = user.spotifyapidata
             user_spotify_data.refresh_token = response_data["refresh_token"]
             user_spotify_data.access_token = response_data["access_token"]
             user_spotify_data.authentication_date = datetime.date.today()
             user_spotify_data.save()
 
-            return Response()
+            return Response({})
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
@@ -88,6 +93,10 @@ class TokenRequest(APIView):
                 new_user_data.refresh_token = ""
                 new_user_data.access_token = ""
                 new_user_data.save()
+
+                new_user_options = PlaylistOptions()
+                new_user_options.user = new_user
+                new_user_options.save()
 
                 user = new_user
             else:
@@ -122,6 +131,20 @@ def verify_google_jwt(token):
     except ValueError:
         return False
 
+# Generic get/update view
+class UserDetail(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user is not None:
+            return Response(
+                UserSerializer(user).data
+            )
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
+
 class Playlist(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -129,20 +152,31 @@ class Playlist(APIView):
         user = request.user
 
         if user is not None:
-            user_spotify_data = user.spotifyapidata_set.all()[0]
+            user_spotify_data = user.spotifyapidata
             make_playlist(user_spotify_data)
 
             return Response({})
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# Generic get/update view
+class PlaylistOptionsDetail(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-class PlaylistOptionsDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PlaylistOptions.objects.all()
-    serializer_class = PlaylistOptionsSerializer
+    def get(self, request):
+        user = request.user
+        if user is not None:
+            try:
+                playlist_options = user.playlistoptions
+                return Response(
+                    PlaylistOptionsSerializer(playlist_options).data
+                )
+            except ObjectDoesNotExist:
+                raise Exception("Error: users playlist options do not exist")
+            
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
 
 def make_playlist(SpotifyApiData):
     secret = settings.SPOTIFY_CLIENT_SECRET
