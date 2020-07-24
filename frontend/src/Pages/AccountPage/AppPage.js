@@ -3,7 +3,6 @@ import React from "react";
 import * as constants from "../../constants";
 import "./AppPage.css";
 import ApiWrapper from "../../ApiWrapper";
-import { generateRedirectUri } from "../../SpotifyApiWrapper";
 import { CircularProgress } from "@material-ui/core";
 import SpotifyPanel from "./SpotifyPanel";
 import OptionsPanel from "./OptionsPanel";
@@ -25,32 +24,6 @@ export default class AppPage extends React.Component {
     this.checkForAndSendSpotifyCode();
   }
 
-  componentDidMount() {
-    this.setState({ isLoading: true });
-    this.apiWrapper
-      .makeAuthenticatedRequest("/spotify/authentication/")
-      .then(([data, _]) => {
-        console.log(data);
-        const authenticationDate = data["authentication_date"];
-        const hasSpotifyAuthentication = authenticationDate !== null;
-        this.setState({
-          isLoading: false,
-          hasSpotifyAuthentication: hasSpotifyAuthentication,
-        });
-      });
-  }
-
-  redirectToSpotify = () => {
-    // TODO: add state
-    const state = "";
-    window.location = generateRedirectUri(
-      constants.SPOTIFY_CLIENT_ID,
-      constants.REDIRECT_URI,
-      constants.SCOPES,
-      state
-    );
-  };
-
   checkForAndSendSpotifyCode = () => {
     // Search for spotify access token in case we've just been redirected
     const params = new URL(window.location).searchParams;
@@ -58,10 +31,12 @@ export default class AppPage extends React.Component {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.apiWrapper
-        .makeAuthenticatedRequest("/spotify/authentication/", { code: spotifyCode }, "POST")
+        .makeAuthenticatedRequest("/spotify/authentication/", "POST", { code: spotifyCode })
         .then(([_, response]) => {
+          console.log("Successfully POSTed spotify auth")
           if (response.status === 200) {
-            this.setState({ hasSpotifyAuthentication: true });
+            console.log("redirecting without code")
+            window.location.href = "/app"
           }
         });
     } else if (window.location.hash.includes("error")) {
@@ -69,17 +44,9 @@ export default class AppPage extends React.Component {
     }
   };
 
-  handleChange = (event, fieldName) => {
-    this.setState({ fieldName: event.target.value });
-  };
-
-  manualPlaylistCreation = () => {
-    this.apiWrapper
-      .makeAuthenticatedRequest("/playlist/", {}, "POST")
-      .then(([data, response]) => {
-        console.log(response);
-      });
-  };
+  componentDidMount() {
+    
+  }
 
   render() {
     return (
@@ -114,15 +81,18 @@ export default class AppPage extends React.Component {
             </div>
           </div>
           <div className="main-panel">
-            {this.state.isLoading ? (
+            {this.state.isLoading && (
               <div>
                 <CircularProgress />
               </div>
-            ) : this.state.selectedIndex === 0 ? (
+            )}
+            {this.state.selectedIndex === 0 && (
               <SpotifyPanel apiWrapper={this.apiWrapper} />
-            ) : this.state.selectedIndex === 1 ? (
+            )}
+            {this.state.selectedIndex === 1 && (
               <OptionsPanel apiWrapper={this.apiWrapper} />
-            ) : (
+            )}
+            {this.state.selectedIndex === 2 && (
               <ManualPanel apiWrapper={this.apiWrapper} />
             )}
           </div>

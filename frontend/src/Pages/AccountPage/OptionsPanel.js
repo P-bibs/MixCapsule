@@ -6,6 +6,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
+import "./OptionsPanel.css"
 
 export default class OptionsPanel extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class OptionsPanel extends React.Component {
 
   componentDidMount() {
     this.apiWrapper
-      .makeRequest("/playlist/options/")
+      .makeAuthenticatedRequest("/playlist/options/")
       .then(([data, response]) => {
         this.setState({
           numberSongs: data["number_songs"],
@@ -46,8 +47,8 @@ export default class OptionsPanel extends React.Component {
       return <CircularProgress />;
     } else {
       return (
-        <div className="OptionsPanel">
-          <h2>MixCapsule Options</h2>
+        <div className="options-panel">
+          <h1>MixCapsule Options</h1>
           <div>Number of Songs: </div>
           <input
             onChange={(e) => {
@@ -55,8 +56,8 @@ export default class OptionsPanel extends React.Component {
             }}
             value={this.state.numSongs}
           />
-          <div className="option">
-            <FormControl className="">
+          <div className="dropdown">
+            <FormControl variant="outlined" className="form-control">
               <InputLabel>History Duration</InputLabel>
               <Select
                 native
@@ -65,6 +66,7 @@ export default class OptionsPanel extends React.Component {
                 inputProps={{
                   name: "age",
                 }}
+                label="History Duration"
               >
                 <option value={"short"}>4 weeks</option>
                 <option value={"medium"}>6 months</option>

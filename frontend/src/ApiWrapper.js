@@ -23,9 +23,10 @@ export default class ApiWrapper {
 
     if (response.status !== 200) {
       console.error(
-        `ERROR when accessing endpoint ${endpoint} with payload ${payload} and method ${method}`
+        `ERROR when accessing endpoint ${endpoint} with payload ${payload.toString()} and method ${method}`
       );
       console.log(response);
+      return [{}, response]
     } else {
       const decodedBody = await response.json();
       return [decodedBody, response];
@@ -49,9 +50,11 @@ export default class ApiWrapper {
       newHeaders
     );
     if (response.status === 401) {
+      console.log("Error authorizing, attempting to refresh token")
       if (await this.requestNewAccessToken()) {
+        console.log("Successfully refreshed token")
         // After we have a new access token, make the request again
-        return await this.makeAuthenticatedRequest(endpoint, payload, method);
+        return await this.makeAuthenticatedRequest(endpoint, method, payload);
       } else {
         // If the refresh token is expired too, then handle that case
         this.handleExpiredRefreshToken();
@@ -65,7 +68,7 @@ export default class ApiWrapper {
     const payload = {
       refresh: this.refreshToken,
     };
-    const [, response] = await ApiWrapper.makeRequest(
+    const [data, response] = await ApiWrapper.makeRequest(
       "/token/refresh/",
       "POST",
       payload
@@ -77,10 +80,9 @@ export default class ApiWrapper {
       return false;
     } else {
       // update this objects access token and return successfully
-      const body = await response.json();
       console.log(`Received refreshed token`);
-      console.log(body);
-      const newAccessToken = body.access;
+      console.log(data);
+      const newAccessToken = data.access;
       this.accessToken = newAccessToken;
       console.log("refreshed token successfully");
       return true;
@@ -91,6 +93,6 @@ export default class ApiWrapper {
     console.error("ERROR refresh token expired. Sending back to login screen");
     setTimeout(() => {
       window.location.href = "/";
-    }, 5000);
+    }, 10000);
   }
 }

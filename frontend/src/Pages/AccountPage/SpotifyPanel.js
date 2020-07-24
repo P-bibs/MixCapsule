@@ -2,16 +2,46 @@ import React from "react";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { CircularProgress, Button } from "@material-ui/core";
+import * as constants from "../../constants";
+import { generateRedirectUri } from "../../SpotifyApiWrapper";
+
 
 export default class SpotifyPanel extends React.Component {
   constructor(props) {
     super(props);
+    this.apiWrapper = props.apiWrapper
     this.state = {
       isLoading: true,
+      hasSpotifyAuthentication: null
     };
+
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.setState({ isLoading: true });
+    this.apiWrapper
+      .makeAuthenticatedRequest("/spotify/authentication/")
+      .then(([data, _]) => {
+        console.log(data);
+        const authenticationDate = data["authentication_date"];
+        const hasSpotifyAuthentication = authenticationDate !== null;
+        this.setState({
+          isLoading: false,
+          hasSpotifyAuthentication: hasSpotifyAuthentication,
+        });
+      });
+  }
+
+  redirectToSpotify = () => {
+    // TODO: add state
+    const state = "";
+    window.location = generateRedirectUri(
+      constants.SPOTIFY_CLIENT_ID,
+      constants.REDIRECT_URI,
+      constants.SCOPES,
+      state
+    );
+  };
 
   render() {
     if (this.state.isLoading) {
