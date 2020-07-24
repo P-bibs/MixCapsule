@@ -11,6 +11,9 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from dotenv import load_dotenv 
+load_dotenv(dotenv_path="/home/paul/Production/MixCapsule/.env", verbose=True)
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
 application = get_wsgi_application()
