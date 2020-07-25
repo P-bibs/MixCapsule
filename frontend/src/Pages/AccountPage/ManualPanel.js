@@ -14,7 +14,7 @@ export default class ManualPanel extends React.Component {
 
   manualPlaylistCreation = () => {
     this.apiWrapper
-      .makeAuthenticatedRequest("/playlist/", {}, "POST")
+      .makeAuthenticatedRequest("/playlist/", "POST", {})
       .then(([data, response]) => {
         console.log(response);
       });
