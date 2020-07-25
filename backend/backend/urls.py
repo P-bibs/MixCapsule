@@ -22,6 +22,7 @@ from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('admin/trigger/month', views.TriggerMonth.as_view()),
     path("spotify/authentication/", views.SpotifyAuthentication.as_view()),
     path("playlist/options/", views.PlaylistOptionsDetail.as_view()),
     path("playlist/", views.Playlist.as_view()),

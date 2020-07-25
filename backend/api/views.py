@@ -2,8 +2,10 @@ import datetime
 
 import requests
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.decorators import method_decorator
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from rest_framework import generics
@@ -16,8 +18,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.models import PlaylistOptions, SpotifyApiData
 from api.serializers import (PlaylistOptionsSerializer,
                              SpotifyApiDataSerializer, UserSerializer)
-from api.spotify_wrapper import (add_tracks_to_playlist, create_playlist,
-                                 get_top_tracks, request_refresh)
 
 class HealthCheck(APIView):
     def get(self, request):
@@ -152,12 +152,21 @@ class Playlist(APIView):
         user = request.user
 
         if user is not None:
-            user_spotify_data = user.spotifyapidata
-            make_playlist(user_spotify_data)
-
-            return Response({})
+            successful = user.spotifyapidata.make_playlist()
+            if successful:
+                return Response({}, status=200)
+            else:
+                return Response({"error": "Server Error: Failed to create playlist"}, status=500)
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
+
+@method_decorator(staff_member_required, name='dispatch')
+class TriggerMonth(APIView):
+    def post(self, request):
+        users = User.objects.all()
+
+        for user in users:
+            user.spotifyapidata.make_playlist()
 
 # Generic get/update view
 class PlaylistOptionsDetail(APIView):
@@ -178,25 +187,3 @@ class PlaylistOptionsDetail(APIView):
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
-def make_playlist(SpotifyApiData):
-    secret = settings.SPOTIFY_CLIENT_SECRET
-    id = settings.SPOTIFY_CLIENT_ID
-    refresh_token = SpotifyApiData.refresh_token
-
-    response = request_refresh(id, secret, refresh_token)
-
-    token = response['access_token']
-
-    top = get_top_tracks(token)
-
-    top_tracks = top['items']
-    top_track_ids = list(map(lambda x : x['id'], top_tracks))
-    top_track_uris = list(map(lambda x : "spotify:track:" + str(x), top_track_ids))
-
-    date = datetime.date.today()
-    month = date.month
-    year  = date.year
-
-    playlist_id = create_playlist(token, str(month) + "/" + str(year) + " MixCapsule")
-
-    add_tracks_to_playlist(token, playlist_id, top_track_uris)
