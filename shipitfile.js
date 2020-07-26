@@ -6,7 +6,7 @@ module.exports = (shipit) => {
 
   shipit.initConfig({
     default: {
-      ignores: ["database", "__pycache__", ".vscode", "venv", "settings.py"],
+      ignores: ["database", "__pycache__", ".vscode", "venv"],
       key: "~/.ssh/id_rsa",
       shallowClone: true,
       servers: "paul@paulbiberstein.me",
@@ -29,7 +29,8 @@ module.exports = (shipit) => {
 
   shipit.task("deployBackend", async () => {
     await shipit.copyToRemote("backend/", REMOTE_PROJECT_PATH + "backend");
-    await shipit.copyToRemote("backend/backend/prod_settings.py", REMOTE_PROJECT_PATH + "backend/backend/settings.py");
+    await shipit.remote("rm backend/backend/settings.py", { cwd: REMOTE_PROJECT_PATH + "backend/backend"});
+    await shipit.remote("mv prod_settings.py settings.py", { cwd: REMOTE_PROJECT_PATH + "backend/backend"});
   });
 
   shipit.task("copyEnv", async () => {
@@ -56,6 +57,10 @@ module.exports = (shipit) => {
       "source venv/bin/activate && python backend/manage.py makemigrations",
       { cwd: REMOTE_PROJECT_PATH }
     );
+  });
+
+  shipit.task("deployScripts", async () => {
+    await shipit.copyToRemote("scripts/", REMOTE_PROJECT_PATH + "scripts")
   });
 };
 

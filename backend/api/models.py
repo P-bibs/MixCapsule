@@ -12,11 +12,25 @@ class SpotifyApiData(models.Model):
     access_token = models.TextField()
     authentication_date = models.DateField(default=None, blank=True, null=True)
 
+    def trigger_time_period(self, time_period):
+        # TODO: add logic for other time periods
+        if time_period == "day":
+            pass
+        elif time_period == "week":
+            pass
+        elif time_period == "month":
+            self.make_playlist()
+        elif time_period == "year":
+            pass
+        else:
+            raise Exception("time_period must be one of [day, week, month, year]")
+
     def make_playlist(self):
         """
         Create a playlist with this data. Return True if successful, False otherwise
         """
         if self.authentication_date is None:
+            print("WARNING: couldn't create playlist for %s due to missing Spotify authentication" % self.user.username)
             return False
         
         secret = settings.SPOTIFY_CLIENT_SECRET

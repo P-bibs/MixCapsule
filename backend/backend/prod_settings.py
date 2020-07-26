@@ -48,7 +48,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -107,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Authentication Backends
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -132,6 +139,7 @@ REST_FRAMEWORK = {
     )
 }
 
+# Security settings
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -139,8 +147,7 @@ SECURE_REFERRER_POLICY = "origin"
 SECURE_HSTS_SECONDS=3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
-AUTHENTICATION_BACKENDS = ['rest_framework_simplejwt.authentication.JWTAuthentication',]
-
+# Environment variables
 API_PATH = os.getenv("MIXCAPSULE_API_PATH")
 APP_PATH = os.getenv("MIXCAPSULE_APP_PATH")
 SPOTIFY_CLIENT_ID = os.getenv("MIXCAPSULE_SPOTIFY_CLIENT_ID")
@@ -149,4 +156,5 @@ REDIRECT_URI = os.getenv("MIXCAPSULE_REDIRECT_URI")
 SCOPES = os.getenv("MIXCAPSULE_SCOPES")
 GOOGLE_CLIENT_ID = os.getenv("MIXCAPSULE_GOOGLE_CLIENT_ID")
 
+# CORS
 CORS_ORIGIN_WHITELIST = [APP_PATH]

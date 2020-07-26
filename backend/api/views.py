@@ -1,11 +1,11 @@
-import datetime
+import datetime, json
 
 import requests
 from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.decorators import method_decorator
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from rest_framework import generics
@@ -160,13 +160,32 @@ class Playlist(APIView):
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
-@method_decorator(staff_member_required, name='dispatch')
-class TriggerMonth(APIView):
-    def post(self, request):
-        users = User.objects.all()
-
-        for user in users:
-            user.spotifyapidata.make_playlist()
+class TriggerTimePeriod(APIView):
+    def post(self, request, time_period=""):
+        """
+        Takes credentials. If valid, calls `trigger_time_period` method on spotifyapidata model for every user in database
+        """
+        payload = json.loads(request.body)
+        request_source_user = authenticate(username=payload["username"], password=payload["password"])
+        if request_source_user is not None:
+            if request_source_user.is_staff:
+                if time_period in ["day", "week", "month", "year"]:
+                    users = User.objects.all()
+                    for user in users:
+                        try:
+                            user.spotifyapidata.trigger_time_period(time_period)
+                        except ObjectDoesNotExist as e:
+                            # If the user doesn't have a spotifyapidata reference, they're a staff member
+                            print("User is non-client user, skipping playlist creation" % user.username)
+                    return Response({}, status=200)
+                else:
+                    return Response({"error": "request must be to one of [day, week, month, year]"}, status=400)
+            else:
+                print("Tried to access TriggerTimePeriod without high enough authorization")
+                return Response({"error": "user does not have permissions to access this resource"}, status=403)
+        else:
+            print("Tried to access TriggerTimePeriod with bad credentials")
+            return Response({"error": "accessing this resource requires authentication"}, status=401)
 
 # Generic get/update view
 class PlaylistOptionsDetail(APIView):
