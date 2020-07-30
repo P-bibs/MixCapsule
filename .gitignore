@@ -70,3 +70,4 @@ config.json
 .vscode
 node_modules
 old_app.js
+*.service

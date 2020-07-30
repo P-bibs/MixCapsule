@@ -62,6 +62,10 @@ module.exports = (shipit) => {
   shipit.task("deployScripts", async () => {
     await shipit.copyToRemote("scripts/", REMOTE_PROJECT_PATH + "scripts")
   });
+
+  shipit.task("deployServices", async () => {
+    await shipit.copyToRemote("services/", REMOTE_PROJECT_PATH + "services")
+  });
 };
 
 // ./node_modules/shipit-cli/bin/shipit default buildFrontend deployFrontend deployBackend copyEnv initializeEnvironments

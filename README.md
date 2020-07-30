@@ -1,7 +1,7 @@
 # MixCapsule
 A script to make a time capsule playlist of your most played Spotify tracks for the last month
 
-# Testing
+# Setting up Local Development
 **Environment**
 ```bash
 cp .env.example .env
@@ -24,4 +24,18 @@ python manage.py runserver
 cd frontend
 npm i
 npm start
+```
+
+**Services/Scripts**
+```bash
+cd scripts
+mv .env.example .env
+nano .env # Fill in missing credentials
+chmod +x trigger-month.sh
+
+cd ../services
+mv TriggerMonth.service.example TriggerMonth.service
+nano TriggerMonth.service # Fill in missing information
+sudo systemctl link /full/path/to/TriggerMonth.service
+sudo systemctl enable /full/path/to/TriggerMonth.timer
 ```

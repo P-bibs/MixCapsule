@@ -1,0 +1,11 @@
+[Unit]
+Description=MixCapsule monthly trigger
+After=network.target
+
+[Service]
+WorkingDirectory=/path/to/MixCapsule/scripts
+ExecStart=/path/to/MixCapsule/scripts/trigger-month.sh
+
+
+[Install]
+WantedBy=default.target

@@ -21,13 +21,13 @@ time_period = args.time_period
 admin_user = os.getenv("MIXCAPSULE_ADMIN_USERNAME")
 admin_pass = os.getenv("MIXCAPSULE_ADMIN_PASS")
 
-print(""" Making request to:
-  https://mixcapsule.paulbiberstein.me/admin/trigger/${time_period}
-  ${admin_user}
-  ${admin_pass}""")
+print(f""" Making request to:
+  https://api.mixcapsule.paulbiberstein.me/admin/trigger/{time_period}
+  {admin_user}
+  {admin_pass}""")
 
 r = requests.post(
-  "https://mixcapsule.paulbiberstein.me/admin/trigger/%s" % time_period,
+  "https://api.mixcapsule.paulbiberstein.me/admin/trigger/%s" % time_period,
   json={
     "username": admin_user,
     "password": admin_pass
