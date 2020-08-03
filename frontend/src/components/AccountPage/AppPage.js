@@ -1,7 +1,6 @@
 import React from "react";
 
 import * as constants from "../../constants";
-import "./AppPage.css";
 import ApiWrapper from "../../httpClients/MixCapsuleHttpClient";
 import { CircularProgress } from "@material-ui/core";
 import SpotifyPanel from "./SpotifyPanel";
@@ -50,7 +49,7 @@ export default class AppPage extends React.Component {
 
   render() {
     return (
-      <div className="app-page">
+      <div id="AppPage" className="h-screen m-0 p-0 flex flex-col">
         <div className="header">
           <div className="product-name header-item" href="/">
             <a className="home-link" href="/">
@@ -59,28 +58,28 @@ export default class AppPage extends React.Component {
           </div>
           <div id="gLogin1" className="header-item"></div>
         </div>
-        <div className="app-page-body">
-          <div className="sidebar">
+        <div className="h-full w-2/5 self-center flex flex-row items-center justify-center">
+          <div className="border-r border-black">
             <div
-              className="option"
+              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
               onClick={() => this.setState({ selectedIndex: 0 })}
             >
               Spotify Authentication
             </div>
             <div
-              className="option"
+              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
               onClick={() => this.setState({ selectedIndex: 1 })}
             >
               Options
             </div>
             <div
-              className="option"
+              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
               onClick={() => this.setState({ selectedIndex: 2 })}
             >
               Manual Creation
             </div>
           </div>
-          <div className="main-panel">
+          <div className="flex flex-col items-center justify-center w-full m-8">
             {this.state.isLoading && (
               <div>
                 <CircularProgress />
