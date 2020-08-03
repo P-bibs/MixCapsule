@@ -1,4 +1,4 @@
-import * as constants from "./constants";
+import * as constants from "../constants";
 
 export default class ApiWrapper {
   constructor(refreshToken, accessToken) {

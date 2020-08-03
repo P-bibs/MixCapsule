@@ -2,7 +2,7 @@ import React from "react";
 
 import * as constants from "../../constants";
 import "./AppPage.css";
-import ApiWrapper from "../../ApiWrapper";
+import ApiWrapper from "../../httpClients/MixCapsuleHttpClient";
 import { CircularProgress } from "@material-ui/core";
 import SpotifyPanel from "./SpotifyPanel";
 import OptionsPanel from "./OptionsPanel";

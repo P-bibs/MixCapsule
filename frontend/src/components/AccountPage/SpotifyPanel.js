@@ -3,7 +3,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { CircularProgress, Button } from "@material-ui/core";
 import * as constants from "../../constants";
-import { generateRedirectUri } from "../../SpotifyApiWrapper";
+import { generateRedirectUri } from "../../httpClients/SpotifyHttpClient";
 
 
 export default class SpotifyPanel extends React.Component {

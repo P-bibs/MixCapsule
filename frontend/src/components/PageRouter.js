@@ -1,6 +1,6 @@
 import React from "react";
-import HomePage from "./Pages/HomePage/HomePage";
-import AppPage from "./Pages/AccountPage/AppPage";
+import HomePage from "./HomePage/HomePage";
+import AppPage from "./AccountPage/AppPage";
 
 export default class PageRouter extends React.Component {
   constructor(props) {

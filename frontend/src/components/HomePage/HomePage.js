@@ -1,7 +1,7 @@
 import React from "react";
 import GoogleLogin from "react-google-login";
 
-import ApiWrapper from "../../ApiWrapper";
+import ApiWrapper from "../../httpClients/MixCapsuleHttpClient";
 import "./HomePage.css";
 
 export default class HomePage extends React.Component {
