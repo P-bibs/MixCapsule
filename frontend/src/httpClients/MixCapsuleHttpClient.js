@@ -26,7 +26,7 @@ export default class MixCapsuleHttpClient {
         `ERROR when accessing endpoint ${endpoint} with payload ${payload.toString()} and method ${method}`
       );
       console.log(response);
-      return [{}, response]
+      return [{}, response];
     } else {
       const decodedBody = await response.json();
       return [decodedBody, response];
@@ -50,9 +50,9 @@ export default class MixCapsuleHttpClient {
       newHeaders
     );
     if (response.status === 401) {
-      console.log("Error authorizing, attempting to refresh token")
+      console.log("Error authorizing, attempting to refresh token");
       if (await this.requestNewAccessToken()) {
-        console.log("Successfully refreshed token")
+        console.log("Successfully refreshed token");
         // After we have a new access token, make the request again
         return await this.makeAuthenticatedRequest(endpoint, method, payload);
       } else {

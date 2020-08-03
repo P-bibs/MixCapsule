@@ -30,12 +30,14 @@ export default class AppPage extends React.Component {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.httpClient
-        .makeAuthenticatedRequest("/spotify/authentication/", "POST", { code: spotifyCode })
+        .makeAuthenticatedRequest("/spotify/authentication/", "POST", {
+          code: spotifyCode,
+        })
         .then(([_, response]) => {
-          console.log("Successfully POSTed spotify auth")
+          console.log("Successfully POSTed spotify auth");
           if (response.status === 200) {
-            console.log("redirecting without code")
-            window.location.href = "/app"
+            console.log("redirecting without code");
+            window.location.href = "/app";
           }
         });
     } else if (window.location.hash.includes("error")) {
@@ -43,9 +45,7 @@ export default class AppPage extends React.Component {
     }
   };
 
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
 
   render() {
     return (

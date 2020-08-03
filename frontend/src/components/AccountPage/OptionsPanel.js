@@ -6,7 +6,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
-import "./OptionsPanel.css"
+import "./OptionsPanel.css";
 
 export default class OptionsPanel extends React.Component {
   constructor(props) {

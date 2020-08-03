@@ -5,16 +5,14 @@ import { CircularProgress, Button } from "@material-ui/core";
 import * as constants from "../../constants";
 import { generateRedirectUri } from "../../httpClients/SpotifyHttpClient";
 
-
 export default class SpotifyPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.httpClient = props.httpClient
+    this.httpClient = props.httpClient;
     this.state = {
       isLoading: true,
-      hasSpotifyAuthentication: null
+      hasSpotifyAuthentication: null,
     };
-
   }
 
   componentDidMount() {
@@ -51,7 +49,11 @@ export default class SpotifyPanel extends React.Component {
         <>
           <h2>
             Spotify Authentication Status:{" "}
-            {this.state.hasSpotifyAuthentication ? <CheckIcon /> : <CloseIcon />}
+            {this.state.hasSpotifyAuthentication ? (
+              <CheckIcon />
+            ) : (
+              <CloseIcon />
+            )}
           </h2>
           <div>
             {this.state.hasSpotifyAuthentication

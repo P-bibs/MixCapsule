@@ -4,7 +4,7 @@ import { CircularProgress, Button } from "@material-ui/core";
 export default class ManualPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.httpClient = props.httpClient
+    this.httpClient = props.httpClient;
     this.state = {
       isLoading: false,
     };
