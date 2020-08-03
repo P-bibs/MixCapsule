@@ -4,7 +4,7 @@ import { CircularProgress, Button } from "@material-ui/core";
 export default class ManualPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.apiWrapper = props.apiWrapper
+    this.httpClient = props.httpClient
     this.state = {
       isLoading: false,
     };
@@ -13,7 +13,7 @@ export default class ManualPanel extends React.Component {
   componentDidMount() {}
 
   manualPlaylistCreation = () => {
-    this.apiWrapper
+    this.httpClient
       .makeAuthenticatedRequest("/playlist/", "POST", {})
       .then(([data, response]) => {
         console.log(response);

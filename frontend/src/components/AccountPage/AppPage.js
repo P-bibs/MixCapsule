@@ -1,8 +1,8 @@
 import React from "react";
+import { CircularProgress } from "@material-ui/core";
 
 import * as constants from "../../constants";
-import ApiWrapper from "../../httpClients/MixCapsuleHttpClient";
-import { CircularProgress } from "@material-ui/core";
+import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
 import SpotifyPanel from "./SpotifyPanel";
 import OptionsPanel from "./OptionsPanel";
 import ManualPanel from "./ManualPanel";
@@ -12,7 +12,7 @@ export default class AppPage extends React.Component {
     super(props);
     const refreshToken = localStorage.getItem("refreshToken");
     const accessToken = localStorage.getItem("accessToken");
-    this.apiWrapper = new ApiWrapper(refreshToken, accessToken);
+    this.httpClient = new MixCapsuleHttpClient(refreshToken, accessToken);
     this.state = {
       selectedIndex: 0,
       isLoading: false,
@@ -29,7 +29,7 @@ export default class AppPage extends React.Component {
     if (params.has("code")) {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
-      this.apiWrapper
+      this.httpClient
         .makeAuthenticatedRequest("/spotify/authentication/", "POST", { code: spotifyCode })
         .then(([_, response]) => {
           console.log("Successfully POSTed spotify auth")
@@ -86,13 +86,13 @@ export default class AppPage extends React.Component {
               </div>
             )}
             {this.state.selectedIndex === 0 && (
-              <SpotifyPanel apiWrapper={this.apiWrapper} />
+              <SpotifyPanel httpClient={this.httpClient} />
             )}
             {this.state.selectedIndex === 1 && (
-              <OptionsPanel apiWrapper={this.apiWrapper} />
+              <OptionsPanel httpClient={this.httpClient} />
             )}
             {this.state.selectedIndex === 2 && (
-              <ManualPanel apiWrapper={this.apiWrapper} />
+              <ManualPanel httpClient={this.httpClient} />
             )}
           </div>
         </div>

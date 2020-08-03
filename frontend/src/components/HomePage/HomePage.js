@@ -1,7 +1,7 @@
 import React from "react";
 import GoogleLogin from "react-google-login";
 
-import ApiWrapper from "../../httpClients/MixCapsuleHttpClient";
+import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
 import "./HomePage.css";
 
 export default class HomePage extends React.Component {
@@ -16,7 +16,7 @@ export default class HomePage extends React.Component {
     const payload = {
       google_token: googleUser.getAuthResponse().id_token,
     };
-    ApiWrapper.makeRequest("/token/request/", "POST", payload).then(
+    MixCapsuleHttpClient.makeRequest("/token/request/", "POST", payload).then(
       ([data, response]) => {
         console.log(data);
         localStorage.setItem("accessToken", data.access);

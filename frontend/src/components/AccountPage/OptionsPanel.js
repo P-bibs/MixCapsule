@@ -11,7 +11,7 @@ import "./OptionsPanel.css"
 export default class OptionsPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.apiWrapper = props.apiWrapper;
+    this.httpClient = props.httpClient;
     this.state = {
       isLoading: true,
       // numberSongs:
@@ -19,7 +19,7 @@ export default class OptionsPanel extends React.Component {
   }
 
   componentDidMount() {
-    this.apiWrapper
+    this.httpClient
       .makeAuthenticatedRequest("/playlist/options/")
       .then(([data, response]) => {
         this.setState({

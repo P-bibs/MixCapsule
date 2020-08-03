@@ -1,6 +1,6 @@
 import * as constants from "../constants";
 
-export default class ApiWrapper {
+export default class MixCapsuleHttpClient {
   constructor(refreshToken, accessToken) {
     this.refreshToken = refreshToken;
     this.accessToken = accessToken;
@@ -43,7 +43,7 @@ export default class ApiWrapper {
       ...headers,
       Authorization: "Bearer " + this.accessToken,
     };
-    const [data, response] = await ApiWrapper.makeRequest(
+    const [data, response] = await MixCapsuleHttpClient.makeRequest(
       endpoint,
       method,
       payload,
@@ -68,7 +68,7 @@ export default class ApiWrapper {
     const payload = {
       refresh: this.refreshToken,
     };
-    const [data, response] = await ApiWrapper.makeRequest(
+    const [data, response] = await MixCapsuleHttpClient.makeRequest(
       "/token/refresh/",
       "POST",
       payload

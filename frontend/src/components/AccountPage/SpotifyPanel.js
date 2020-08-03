@@ -9,7 +9,7 @@ import { generateRedirectUri } from "../../httpClients/SpotifyHttpClient";
 export default class SpotifyPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.apiWrapper = props.apiWrapper
+    this.httpClient = props.httpClient
     this.state = {
       isLoading: true,
       hasSpotifyAuthentication: null
@@ -19,7 +19,7 @@ export default class SpotifyPanel extends React.Component {
 
   componentDidMount() {
     this.setState({ isLoading: true });
-    this.apiWrapper
+    this.httpClient
       .makeAuthenticatedRequest("/spotify/authentication/")
       .then(([data, _]) => {
         console.log(data);
