@@ -2,7 +2,6 @@ import React from "react";
 import GoogleLogin from "react-google-login";
 
 import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
-import "./HomePage.css";
 
 export default class HomePage extends React.Component {
   onSignIn(googleUser) {
@@ -28,16 +27,16 @@ export default class HomePage extends React.Component {
 
   render() {
     return (
-      <div className="home-page">
-        <div className="header">
-          <div className="product-name header-item" href="/">
-            <a className="home-link" href="/">
+      <div id="HomePage" className="h-screen m-0 p-0 flex flex-col">
+        <div className="h-7 m-0 p-0 bg-purple-900 flex flex-row items-center justify-between">
+          <div className="text-purple-400 m-3" href="/">
+            <a href="/">
               MixCapsule
             </a>
           </div>
-          <div id="gLogin1" className="header-item"></div>
+          <div id="gLogin1"></div>
         </div>
-        <div className="welcome-shade">
+        <div className="flex-grow text-center flex flex-col items-center justify-center">
           <h1>MixCapsule</h1>
           <br />
           <h2>
@@ -56,7 +55,7 @@ export default class HomePage extends React.Component {
             onFailure={(err) => console.log(err)}
           />
         </div>
-        <div className="footer"></div>
+        <div id="footer" className="h-20 bg-purple-900"></div>
       </div>
     );
   }
