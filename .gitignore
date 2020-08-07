@@ -71,4 +71,4 @@ config.json
 node_modules
 old_app.js
 *.service
-src/tailwind.output.css
+frontend/src/tailwind.output.css
