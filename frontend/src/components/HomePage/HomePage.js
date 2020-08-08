@@ -20,8 +20,8 @@ const InfoIcon = () => (
 );
 
 const FeatureCard = ({ icon, title, children }) => (
-  <div className="m-5 p-3 w-1/4 rounded bg-gray-400">
-    <div className="flex flex-row items-center">
+  <div className="my-5 lg:m-5 p-3 lg:w-1/4 rounded bg-gray-400">
+    <div className="flex flex-row flex-wrap items-center">
       <div className="p-3 mr-3 rounded-full bg-gray-500">{icon}</div>
       <div className="font-bold text-lg">{title}</div>
     </div>
@@ -90,7 +90,7 @@ const HomePage = () => {
       </div>
       <div
         id="welcome-panel"
-        className="my-24 flex-grow text-center flex flex-row items-center justify-center"
+        className="my-24 flex-grow text-center flex flex-col lg:flex-row items-center justify-center"
       >
         <div className="flex flex-row items-center">
           <div className="-ml-10 flex flex-col">
@@ -99,8 +99,8 @@ const HomePage = () => {
             <img className="h-20 object-contain " src={mcLogo} />
           </div>
         </div>
-        <div id="spacer" className="w-56"></div>
-        <div className="w-1/4 min-h-64 p-4 bg-orange-300 rounded flex flex-row">
+        <div id="spacer" className="h-20 lg:w-56"></div>
+        <div className="w-3/4 lg:w-1/4 min-h-64 p-4 mx-2 bg-orange-300 rounded flex flex-row">
           <div className="flex-grow flex flex-col justify-between">
             <div className="mb-4 text-left font-bold text-2xl">
               Time capsule playlists delivered to you every month
@@ -121,7 +121,7 @@ const HomePage = () => {
       <div className="w-full bg-gray-900">
         <div id="about" className>
           <h2 className="my-4 text-center text-4xl text-white">About</h2>
-          <div className="w-1/2 m-auto text-white">
+          <div className="w-3/4 lg:w-1/2 m-auto text-white">
             <p>
               We all know music can evoke strong memories of the past, as has
               been studied{" "}
@@ -149,31 +149,31 @@ const HomePage = () => {
               playlists and see what you were listening to 1 month, 6 months, or
               even a year ago.
             </p>
-          </div>
-          <br />
-          <div className="w-1/2 px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b shadow-md">
-            <div className="flex flex-row">
-              <div className="py-1">
-                <InfoIcon />
-              </div>
-              <div>
-                <p className="font-bold">Playlist Folders</p>
-                <p className="text-sm">
-                  If you're the kind of person that likes to stay organized, we
-                  recommend putting your Mix Capsule playlists in a{" "}
-                  <a href="https://support.spotify.com/us/using_spotify/playlists/playlist-folders/">
-                    playlist folder
-                  </a>{" "}
-                  on Spotify to keep them all in one place.
-                </p>
+            <br />
+            <div className="px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b shadow-md">
+              <div className="flex flex-row">
+                <div className="py-1">
+                  <InfoIcon />
+                </div>
+                <div>
+                  <p className="font-bold">Playlist Folders</p>
+                  <p className="text-sm">
+                    If you're the kind of person that likes to stay organized,
+                    we recommend putting your Mix Capsule playlists in a{" "}
+                    <a href="https://support.spotify.com/us/using_spotify/playlists/playlist-folders/">
+                      playlist folder
+                    </a>{" "}
+                    on Spotify to keep them all in one place.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div id="divider" className="w-5/6 h-px mx-auto bg-white my-4" />
-        <div id="features" className="w-2/3 mx-auto">
+        <div id="features">
           <h2 className="my-4 text-center text-4xl text-white">Features</h2>
-          <div className="flex flex-row justify-between">
+          <div className="w-3/4 lg:w-1/2 mx-auto flex flex-col lg:flex-row justify-between">
             <FeatureCard icon={<FiZap />} title="Seamless">
               Mix Capsule integrates with your existing Spotify library so you
               don't have to worry about making any new accounts. Just
@@ -194,9 +194,9 @@ const HomePage = () => {
           </div>
         </div>
         <div id="divider" className="w-5/6 h-px mx-auto bg-white my-4" />
-        <div id="privacy" className="">
+        <div id="privacy">
           <h2 className="my-4 text-center text-4xl text-white">Privacy</h2>
-          <div className="w-1/2 m-auto text-white">
+          <div className="w-3/4 lg:w-1/2 m-auto text-white">
             <p>
               Mix Capsule takes your privacy seriously. To be able to
               automatically generate playlists in your Spotify library, the
