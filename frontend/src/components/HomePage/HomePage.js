@@ -20,7 +20,7 @@ const InfoIcon = () => (
 );
 
 const FeatureCard = ({ icon, title, children }) => (
-  <div className="m-5 p-3 w-1/4 rounded flex flex-col bg-gray-400">
+  <div className="m-5 p-3 w-1/4 rounded bg-gray-400">
     <div className="flex flex-row items-center">
       <div className="p-3 mr-3 rounded-full bg-gray-500">{icon}</div>
       <div className="font-bold text-lg">{title}</div>
@@ -74,8 +74,11 @@ const HomePage = () => {
   );
 
   return (
-    <div id="HomePage" className="h-screen m-0 p-0 flex flex-col">
-      <div className="m-0 p-0 bg-purple-900 flex flex-row items-center justify-between">
+    <div id="HomePage" className="m-0 p-0 flex flex-col">
+      <div
+        id="header"
+        className="m-0 p-0 bg-purple-900 shadow sticky top-0 flex flex-row items-center justify-between"
+      >
         <div className="text-purple-400 m-3" href="/">
           <a href="/" className="no-underline">
             Mix Capsule
