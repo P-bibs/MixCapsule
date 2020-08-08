@@ -136,7 +136,7 @@ const HomePage = () => {
               The trouble is, these recollections often come only by chance,
               when you happen to hear a song from your past on the radio or in a
               waiting room. If you take care to record all the music you've
-              listened to and when, its easier to connect to the past, but that
+              listened to and when, it's easier to connect to the past, but that
               recording process takes far too much time to be worth it.
             </p>
             <br />
