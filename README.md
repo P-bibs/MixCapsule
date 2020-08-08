@@ -1,5 +1,5 @@
 # MixCapsule
-A script to make a time capsule playlist of your most played Spotify tracks for the last month
+A website to make time capsule playlists of your most played Spotify tracks for the last month
 
 # Setting up Local Development
 **Environment**

@@ -7,7 +7,11 @@ module.exports = {
     'public/**/*.html',
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        "max-content": "max-content",
+      },
+    },
   },
   variants: {},
   plugins: [],
