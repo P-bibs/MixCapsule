@@ -16,12 +16,17 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.models import Profile, PlaylistOptions, SpotifyApiData
-from api.serializers import (PlaylistOptionsSerializer,
-                             SpotifyApiDataSerializer, UserSerializer)
+from api.serializers import (
+    PlaylistOptionsSerializer,
+    SpotifyApiDataSerializer,
+    UserSerializer,
+)
+
 
 class HealthCheck(APIView):
     def get(self, request):
         return Response("OK")
+
 
 class SpotifyAuthentication(APIView):
     authentication_classes = [JWTAuthentication]
@@ -32,9 +37,7 @@ class SpotifyAuthentication(APIView):
         if user is not None:
             try:
                 spotify_api_data = user.spotifyapidata
-                return Response(
-                    SpotifyApiDataSerializer(spotify_api_data).data
-                )
+                return Response(SpotifyApiDataSerializer(spotify_api_data).data)
             except ObjectDoesNotExist:
                 raise Exception("Error: users spotify api data does not exist")
         else:
@@ -51,19 +54,25 @@ class SpotifyAuthentication(APIView):
 
             print(REDIRECT_URI)
             response = requests.post(
-            "https://accounts.spotify.com/api/token",
+                "https://accounts.spotify.com/api/token",
                 data={
-                    'grant_type': 'authorization_code',
-                    'code': code,
-                    'redirect_uri': REDIRECT_URI,
-                    'client_id': CLIENT_ID,
-                    'client_secret': CLIENT_SECRET
-                }
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": REDIRECT_URI,
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                },
             )
             response_data = response.json()
             print(response_data)
             if "error" in response_data:
-                return Response({"error": "Spotify API error: " + response_data["error_description"]}, status=400)
+                return Response(
+                    {
+                        "error": "Spotify API error: "
+                        + response_data["error_description"]
+                    },
+                    status=400,
+                )
             user_spotify_data = user.spotifyapidata
             user_spotify_data.refresh_token = response_data["refresh_token"]
             user_spotify_data.access_token = response_data["access_token"]
@@ -73,6 +82,7 @@ class SpotifyAuthentication(APIView):
             return Response({})
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
+
 
 class TokenRequest(APIView):
     def post(self, request):
@@ -89,7 +99,8 @@ class TokenRequest(APIView):
                     token_info["email"],
                     "",
                     first_name=token_info["given_name"],
-                    last_name=token_info["family_name"])
+                    last_name=token_info["family_name"],
+                )
                 new_user.set_unusable_password()
                 new_user.save()
 
@@ -107,25 +118,26 @@ class TokenRequest(APIView):
                 user = user[0]
 
             refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
-    
+            return Response(
+                {"refresh": str(refresh), "access": str(refresh.access_token),}
+            )
+
 
 def verify_google_jwt(token):
     CLIENT_ID = settings.GOOGLE_CLIENT_ID
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
+        idinfo = id_token.verify_oauth2_token(
+            token, google_requests.Request(), CLIENT_ID
+        )
 
         # Or, if multiple clients access the backend server:
         # idinfo = id_token.verify_oauth2_token(token, requests.Request())
         # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
         #     raise ValueError('Could not verify audience.')
 
-        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            raise ValueError('Wrong issuer.')
+        if idinfo["iss"] not in ["accounts.google.com", "https://accounts.google.com"]:
+            raise ValueError("Wrong issuer.")
 
         # If auth request is from a G Suite domain:
         # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
@@ -135,6 +147,7 @@ def verify_google_jwt(token):
     except ValueError:
         return False
 
+
 # Generic get/update view
 class UserDetail(APIView):
     authentication_classes = [JWTAuthentication]
@@ -143,15 +156,15 @@ class UserDetail(APIView):
     def get(self, request):
         user = request.user
         if user is not None:
-            return Response(
-                UserSerializer(user).data
-            )
+            return Response(UserSerializer(user).data)
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
+
 
 class Playlist(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         user = request.user
 
@@ -160,9 +173,12 @@ class Playlist(APIView):
             if successful:
                 return Response({}, status=200)
             else:
-                return Response({"error": "Server Error: Failed to create playlist"}, status=500)
+                return Response(
+                    {"error": "Server Error: Failed to create playlist"}, status=500
+                )
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
+
 
 class TriggerTimePeriod(APIView):
     def post(self, request, time_period=""):
@@ -170,7 +186,9 @@ class TriggerTimePeriod(APIView):
         Takes credentials. If valid, calls `trigger_time_period` method on spotifyapidata model for every user in database
         """
         payload = json.loads(request.body)
-        request_source_user = authenticate(username=payload["username"], password=payload["password"])
+        request_source_user = authenticate(
+            username=payload["username"], password=payload["password"]
+        )
         if request_source_user is not None:
             if request_source_user.is_staff:
                 if time_period in ["day", "week", "month", "year"]:
@@ -180,16 +198,30 @@ class TriggerTimePeriod(APIView):
                             user.spotifyapidata.trigger_time_period(time_period)
                         except ObjectDoesNotExist as e:
                             # If the user doesn't have a spotifyapidata reference, they're a staff member
-                            print("User is non-client user, skipping playlist creation" % user.username)
+                            print(
+                                "User is non-client user, skipping playlist creation"
+                                % user.username
+                            )
                     return Response({}, status=200)
                 else:
-                    return Response({"error": "request must be to one of [day, week, month, year]"}, status=400)
+                    return Response(
+                        {"error": "request must be to one of [day, week, month, year]"},
+                        status=400,
+                    )
             else:
-                print("Tried to access TriggerTimePeriod without high enough authorization")
-                return Response({"error": "user does not have permissions to access this resource"}, status=403)
+                print(
+                    "Tried to access TriggerTimePeriod without high enough authorization"
+                )
+                return Response(
+                    {"error": "user does not have permissions to access this resource"},
+                    status=403,
+                )
         else:
             print("Tried to access TriggerTimePeriod with bad credentials")
-            return Response({"error": "accessing this resource requires authentication"}, status=401)
+            return Response(
+                {"error": "accessing this resource requires authentication"}, status=401
+            )
+
 
 # Generic get/update view
 class PlaylistOptionsDetail(APIView):
@@ -201,12 +233,10 @@ class PlaylistOptionsDetail(APIView):
         if user is not None:
             try:
                 playlist_options = user.playlistoptions
-                return Response(
-                    PlaylistOptionsSerializer(playlist_options).data
-                )
+                return Response(PlaylistOptionsSerializer(playlist_options).data)
             except ObjectDoesNotExist:
                 raise Exception("Error: users playlist options do not exist")
-            
+
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
