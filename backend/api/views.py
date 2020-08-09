@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.models import PlaylistOptions, SpotifyApiData
+from api.models import Profile, PlaylistOptions, SpotifyApiData
 from api.serializers import (PlaylistOptionsSerializer,
                              SpotifyApiDataSerializer, UserSerializer)
 
@@ -84,18 +84,22 @@ class TokenRequest(APIView):
 
             # If this is a new user, create an entry for them
             if len(user) == 0:
-                new_user = User.objects.create_user(token_info["email"], token_info["email"], "")
+                new_user = User.objects.create_user(
+                    token_info["email"],
+                    token_info["email"],
+                    "",
+                    first_name=token_info["given_name"],
+                    last_name=token_info["family_name"])
                 new_user.set_unusable_password()
                 new_user.save()
 
-                new_user_data = SpotifyApiData()
-                new_user_data.user = new_user
-                new_user_data.refresh_token = ""
-                new_user_data.access_token = ""
+                new_user_profile = Profile(user=new_user)
+                new_user_profile.save()
+
+                new_user_data = SpotifyApiData(user=new_user)
                 new_user_data.save()
 
-                new_user_options = PlaylistOptions()
-                new_user_options.user = new_user
+                new_user_options = PlaylistOptions(user=new_user)
                 new_user_options.save()
 
                 user = new_user

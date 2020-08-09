@@ -6,11 +6,27 @@ from django.db import models
 from api.spotify_wrapper import (add_tracks_to_playlist, create_playlist,
                                  get_top_tracks, request_refresh)
 
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    spotify_auth_required = models.BooleanField(default=True, null=False, blank=False)
+
+    spotify_name = models.CharField(max_length=50, null=False, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
+    def has_generated_first_playlist(self):
+        return len(self.generated_playlist_set.all()) != 0
+
 class SpotifyApiData(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     refresh_token = models.TextField()
     access_token = models.TextField()
     authentication_date = models.DateField(default=None, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s spotify api data"
 
     def trigger_time_period(self, time_period):
         # TODO: add logic for other time periods
@@ -55,8 +71,22 @@ class SpotifyApiData(models.Model):
 
         add_tracks_to_playlist(token, playlist_id, top_track_uris)
 
+        # record new playlist in GneratedPlaylists table
+        new_playlist_object = GeneratedPlaylist(user=self.user, spotify_id=playlist_id)
+        new_playlist_object.save()
+        
         return True
 
 class PlaylistOptions(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     number_songs = models.PositiveSmallIntegerField(default=50)
+
+    def __str__(self):
+        return f"{self.user.username}'s playlist options"
+
+class GeneratedPlaylist(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    spotify_id = models.CharField(max_length=25, blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.user.username}'s playlist {self.spotify_id}"
