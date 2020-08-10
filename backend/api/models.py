@@ -1,5 +1,4 @@
 import datetime
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 
@@ -14,15 +13,16 @@ from api.spotify_wrapper import (
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    spotify_auth_required = models.BooleanField(default=True, null=False, blank=False)
-
     spotify_name = models.CharField(max_length=50, null=False, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+    def spotify_auth_required(self):
+        return self.user.spotifyapidata.refresh_token == ""
+
     def has_generated_first_playlist(self):
-        return len(self.generated_playlist_set.all()) != 0
+        return len(self.user.generatedplaylist_set.all()) != 0
 
 
 class SpotifyApiData(models.Model):

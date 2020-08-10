@@ -15,20 +15,22 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.models import Profile, PlaylistOptions, SpotifyApiData
+from api.models import Profile, PlaylistOptions, SpotifyApiData, GeneratedPlaylist
 from api.serializers import (
     PlaylistOptionsSerializer,
     SpotifyApiDataSerializer,
     UserSerializer,
+    ProfileSerializer,
+    GeneratedPlaylistSerializer,
 )
 
 
-class HealthCheck(APIView):
+class HealthCheckView(APIView):
     def get(self, request):
         return Response("OK")
 
 
-class SpotifyAuthentication(APIView):
+class SpotifyAuthenticationView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -84,7 +86,7 @@ class SpotifyAuthentication(APIView):
             raise Exception("Error: jwt token doesn't correspond to any user")
 
 
-class TokenRequest(APIView):
+class TokenRequestView(APIView):
     def post(self, request):
         google_token = request.data["google_token"]
 
@@ -149,7 +151,7 @@ def verify_google_jwt(token):
 
 
 # Generic get/update view
-class UserDetail(APIView):
+class UserDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -161,9 +163,31 @@ class UserDetail(APIView):
             raise Exception("Error: jwt token doesn't correspond to any user")
 
 
-class Playlist(APIView):
+# Generic get/update view
+class ProfileDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user is not None:
+            return Response(ProfileSerializer(user.profile).data)
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
+
+
+class PlaylistListCreateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        if user is not None:
+            playlists = user.generatedplaylist_set
+            return Response(GeneratedPlaylistSerializer(playlists, many=True).data)
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
 
     def post(self, request):
         user = request.user
@@ -180,7 +204,7 @@ class Playlist(APIView):
             raise Exception("Error: jwt token doesn't correspond to any user")
 
 
-class TriggerTimePeriod(APIView):
+class TriggerTimePeriodView(APIView):
     def post(self, request, time_period=""):
         """
         Takes credentials. If valid, calls `trigger_time_period` method on spotifyapidata model for every user in database
@@ -224,7 +248,7 @@ class TriggerTimePeriod(APIView):
 
 
 # Generic get/update view
-class PlaylistOptionsDetail(APIView):
+class PlaylistOptionsDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
