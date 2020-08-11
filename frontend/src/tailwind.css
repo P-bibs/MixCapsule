@@ -4,6 +4,14 @@ a {
   @apply underline;
 }
 
+h2 {
+  @apply text-center text-3xl;
+}
+
+h3 {
+  @apply text-center text-2xl;
+}
+
 @tailwind components;
 
 .card {
