@@ -1,37 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { CircularProgress, Button } from "@material-ui/core";
 
-export default class ManualPanel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.httpClient = props.httpClient;
-    this.state = {
-      isLoading: false,
-    };
-  }
+const ManualPanel = ({ httpClient }) => {
+  const [isLoading, setIsLoading] = useState(false);
 
-  componentDidMount() {}
-
-  manualPlaylistCreation = () => {
-    this.httpClient.createPlaylist().then(([data, response]) => {
-      console.log(response);
+  const manualPlaylistCreation = () => {
+    setIsLoading(true);
+    httpClient.createPlaylist().then(([data, response]) => {
+      setIsLoading(false);
     });
   };
 
-  render() {
-    if (this.state.isLoading) {
-      return <CircularProgress />;
-    } else {
-      return (
-        <Button
-          variant="contained"
-          onClick={() => {
-            this.manualPlaylistCreation();
-          }}
-        >
-          Trigger Manual Creation
-        </Button>
-      );
-    }
-  }
-}
+  return (
+    <div className="w-full h-full flex flex-col">
+      <h2 className="mb-3">Manual Playlist Creation</h2>
+      <div className="w-full flex-grow flex flex-col items-center justify-center">
+        <p className="mx-5 mb-4 text-center">
+          If you don't want to wait until the end of the month, you can generate
+          your Mix Capsule playlist right now by clicking the button below
+        </p>
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => {
+              manualPlaylistCreation();
+            }}
+          >
+            Create Playlist
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+ManualPanel.propTypes = {
+  httpClient: PropTypes.object.isRequired,
+};
+
+export default ManualPanel;
