@@ -3,9 +3,22 @@ import { CircularProgress } from "@material-ui/core";
 
 import * as constants from "../../constants";
 import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
-import SpotifyPanel from "./SpotifyPanel";
+import PlaylistsPanel from "./PlaylistsPanel";
 import OptionsPanel from "./OptionsPanel";
 import ManualPanel from "./ManualPanel";
+import DashboardPanel from "./DashboardPanel";
+
+const DrawerItem = (props) => {
+  return (
+    <div
+      className="m-3 p-2 card border border-black cursor-pointer hover:bg-gray-500"
+      onClick={props.onClick}
+    >
+      {" "}
+      {props.children}{" "}
+    </div>
+  );
+};
 
 export default class AppPage extends React.Component {
   constructor(props) {
@@ -30,9 +43,7 @@ export default class AppPage extends React.Component {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
       this.httpClient
-        .makeAuthenticatedRequest("/spotify/authentication/", "POST", {
-          code: spotifyCode,
-        })
+        .sendSpotifyAuthenticationData(spotifyCode)
         .then(([_, response]) => {
           console.log("Successfully POSTed spotify auth");
           if (response.status === 200) {
@@ -50,53 +61,76 @@ export default class AppPage extends React.Component {
   render() {
     return (
       <div id="AppPage" className="h-screen m-0 p-0 flex flex-col">
-        <div className="header">
-          <div className="product-name header-item" href="/">
-            <a className="home-link" href="/">
-              MixCapsule
+        <div
+          id="header"
+          className="m-0 p-0 bg-purple-900 shadow sticky top-0 flex flex-row items-center justify-between"
+        >
+          <div className="text-purple-400 m-3" href="/">
+            <a href="/" className="no-underline">
+              Mix Capsule
             </a>
           </div>
-          <div id="gLogin1" className="header-item"></div>
         </div>
         <div className="h-full w-2/5 self-center flex flex-row items-center justify-center">
           <div className="border-r border-black">
-            <div
-              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
-              onClick={() => this.setState({ selectedIndex: 0 })}
+            <DrawerItem
+              onClick={() =>
+                this.setState({
+                  selectedIndex: 0,
+                })
+              }
             >
-              Spotify Authentication
-            </div>
-            <div
-              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
-              onClick={() => this.setState({ selectedIndex: 1 })}
+              Dashboard
+            </DrawerItem>
+            <DrawerItem
+              onClick={() =>
+                this.setState({
+                  selectedIndex: 1,
+                })
+              }
+            >
+              Playlists
+            </DrawerItem>
+            <DrawerItem
+              onClick={() =>
+                this.setState({
+                  selectedIndex: 2,
+                })
+              }
             >
               Options
-            </div>
-            <div
-              className="m-3 p-2 border border-black cursor-pointer hover:bg-gray-500"
-              onClick={() => this.setState({ selectedIndex: 2 })}
+            </DrawerItem>
+            <DrawerItem
+              onClick={() =>
+                this.setState({
+                  selectedIndex: 3,
+                })
+              }
             >
               Manual Creation
-            </div>
+            </DrawerItem>
           </div>
-          <div className="flex flex-col items-center justify-center w-full m-8">
+          <div className="w-full m-8 p-3 card flex flex-col items-center justify-center">
             {this.state.isLoading && (
               <div>
                 <CircularProgress />
               </div>
             )}
             {this.state.selectedIndex === 0 && (
-              <SpotifyPanel httpClient={this.httpClient} />
+              <DashboardPanel httpClient={this.httpClient} />
             )}
             {this.state.selectedIndex === 1 && (
-              <OptionsPanel httpClient={this.httpClient} />
+              <PlaylistsPanel httpClient={this.httpClient} />
             )}
             {this.state.selectedIndex === 2 && (
+              <OptionsPanel httpClient={this.httpClient} />
+            )}
+            {this.state.selectedIndex === 3 && (
               <ManualPanel httpClient={this.httpClient} />
             )}
           </div>
         </div>
-        <div className="footer"></div>
+        <div className="footer"> </div>
       </div>
     );
   }

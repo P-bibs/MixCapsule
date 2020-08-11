@@ -18,9 +18,6 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
-    def spotify_auth_required(self):
-        return self.user.spotifyapidata.refresh_token == ""
-
     def has_generated_first_playlist(self):
         return len(self.user.generatedplaylist_set.all()) != 0
 
@@ -33,6 +30,9 @@ class SpotifyApiData(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s spotify api data"
+
+    def spotify_auth_required(self):
+        return self.refresh_token == ""
 
     def trigger_time_period(self, time_period):
         # TODO: add logic for other time periods

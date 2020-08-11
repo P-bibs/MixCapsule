@@ -13,11 +13,9 @@ export default class ManualPanel extends React.Component {
   componentDidMount() {}
 
   manualPlaylistCreation = () => {
-    this.httpClient
-      .makeAuthenticatedRequest("/playlist/", "POST", {})
-      .then(([data, response]) => {
-        console.log(response);
-      });
+    this.httpClient.createPlaylist().then(([data, response]) => {
+      console.log(response);
+    });
   };
 
   render() {

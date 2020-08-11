@@ -18,7 +18,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             "user",
-            "spotify_auth_required",
             "spotify_name",
             "has_generated_first_playlist",
         ]
@@ -28,7 +27,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SpotifyApiDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpotifyApiData
-        fields = ["refresh_token", "access_token", "authentication_date"]
+        fields = [
+            "spotify_auth_required",
+            "access_token",
+            "authentication_date",
+        ]
 
 
 class PlaylistOptionsSerializer(serializers.ModelSerializer):

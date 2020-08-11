@@ -23,11 +23,11 @@ from api import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("admin/trigger/<slug:time_period>", views.TriggerTimePeriodView.as_view()),
-    path("spotify/authentication/", views.SpotifyAuthenticationView.as_view()),
     path("user/", views.UserDetailView.as_view()),
     path("user/profile/", views.ProfileDetailView.as_view()),
     path("user/playlists/", views.PlaylistListCreateView.as_view()),
     path("user/options/", views.PlaylistOptionsDetailView.as_view()),
+    path("user/spotify-authentication/", views.SpotifyAuthenticationView.as_view()),
     path("token/request/", views.TokenRequestView.as_view()),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("healthcheck", views.HealthCheckView.as_view()),

@@ -41,14 +41,14 @@ const HomePage = () => {
     const payload = {
       google_token: googleUser.getAuthResponse().id_token,
     };
-    MixCapsuleHttpClient.makeRequest("/token/request/", "POST", payload).then(
-      ([data, response]) => {
-        console.log(data);
-        localStorage.setItem("accessToken", data.access);
-        localStorage.setItem("refreshToken", data.refresh);
-        window.location.href = "/app";
-      }
-    );
+    MixCapsuleHttpClient.requestToken(
+      googleUser.getAuthResponse().id_token
+    ).then(([data, response]) => {
+      console.log(data);
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      window.location.href = "/app";
+    });
   };
 
   /**

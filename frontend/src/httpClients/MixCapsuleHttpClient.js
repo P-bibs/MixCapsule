@@ -64,6 +64,12 @@ export default class MixCapsuleHttpClient {
     }
   }
 
+  static async requestToken(token) {
+    return MixCapsuleHttpClient.makeRequest("/token/request/", "POST", {
+      google_token: token,
+    });
+  }
+
   async requestNewAccessToken() {
     const payload = {
       refresh: this.refreshToken,
@@ -94,5 +100,37 @@ export default class MixCapsuleHttpClient {
     setTimeout(() => {
       window.location.href = "/";
     }, 10000);
+  }
+
+  getUserData() {
+    return this.makeAuthenticatedRequest("/user/");
+  }
+
+  getSpotifyAuthenticationData() {
+    return this.makeAuthenticatedRequest("/user/spotify-authentication/");
+  }
+
+  sendSpotifyAuthenticationData(code) {
+    return this.makeAuthenticatedRequest(
+      "/user/spotify-authentication/",
+      "POST",
+      { code: code }
+    );
+  }
+
+  getPlaylistList() {
+    return this.makeAuthenticatedRequest("/user/playlists/");
+  }
+
+  createPlaylist() {
+    return this.makeAuthenticatedRequest("/user/playlists/", "POST");
+  }
+
+  getOptions() {
+    return this.makeAuthenticatedRequest("/user/options/");
+  }
+
+  updateOptions(options) {
+    return this.makeAuthenticatedRequest("/user/options/", "PATCH", options);
   }
 }
