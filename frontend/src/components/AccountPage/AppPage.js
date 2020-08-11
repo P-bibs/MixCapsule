@@ -1,5 +1,6 @@
 import React from "react";
 import { CircularProgress } from "@material-ui/core";
+import { IoLogoGithub } from "react-icons/io";
 
 import * as constants from "../../constants";
 import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
@@ -8,14 +9,17 @@ import OptionsPanel from "./OptionsPanel";
 import ManualPanel from "./ManualPanel";
 import DashboardPanel from "./DashboardPanel";
 
-const DrawerItem = (props) => {
+const DrawerItem = ({ onClick, children, active }) => {
   return (
     <div
-      className="m-3 p-2 card border border-black cursor-pointer hover:bg-gray-500"
-      onClick={props.onClick}
+      className={
+        "mt-2 mb-0 mx-0 p-2 pb-0 text-white border-b-2 border-gray-300 rounded-t-sm cursor-pointer hover:bg-gray-500 hover:border-gray-400" +
+        (active ? " bg-gray-600 border-gray-500" : "")
+      }
+      onClick={onClick}
     >
       {" "}
-      {props.children}{" "}
+      {children}{" "}
     </div>
   );
 };
@@ -60,7 +64,7 @@ export default class AppPage extends React.Component {
 
   render() {
     return (
-      <div id="AppPage" className="h-screen m-0 p-0 flex flex-col">
+      <div id="AppPage" className="h-screen w-full m-0 p-0 flex flex-col">
         <div
           id="header"
           className="m-0 p-0 bg-purple-900 shadow sticky top-0 flex flex-row items-center justify-between"
@@ -71,9 +75,13 @@ export default class AppPage extends React.Component {
             </a>
           </div>
         </div>
-        <div className="h-full w-2/5 self-center flex flex-row items-center justify-center">
-          <div className="border-r border-black">
+        <div
+          id="body"
+          className="w-2/3 h-full my-12 self-center card flex flex-col items-center justify-center"
+        >
+          <div className="w-full bg-gray-700 rounded-t overflow-x-auto flex flex-row justify-center">
             <DrawerItem
+              active={this.state.selectedIndex === 0}
               onClick={() =>
                 this.setState({
                   selectedIndex: 0,
@@ -83,6 +91,7 @@ export default class AppPage extends React.Component {
               Dashboard
             </DrawerItem>
             <DrawerItem
+              active={this.state.selectedIndex === 1}
               onClick={() =>
                 this.setState({
                   selectedIndex: 1,
@@ -92,6 +101,7 @@ export default class AppPage extends React.Component {
               Playlists
             </DrawerItem>
             <DrawerItem
+              active={this.state.selectedIndex === 2}
               onClick={() =>
                 this.setState({
                   selectedIndex: 2,
@@ -101,6 +111,7 @@ export default class AppPage extends React.Component {
               Options
             </DrawerItem>
             <DrawerItem
+              active={this.state.selectedIndex === 3}
               onClick={() =>
                 this.setState({
                   selectedIndex: 3,
@@ -110,7 +121,7 @@ export default class AppPage extends React.Component {
               Manual Creation
             </DrawerItem>
           </div>
-          <div className="w-full m-8 p-3 card flex flex-col items-center justify-center">
+          <div className="w-full m-8 flex-grow flex flex-col items-center justify-center">
             {this.state.isLoading && (
               <div>
                 <CircularProgress />
@@ -130,7 +141,20 @@ export default class AppPage extends React.Component {
             )}
           </div>
         </div>
-        <div className="footer"> </div>
+        <div
+          id="footer"
+          className="w-full py-4 text-white bg-purple-900 flex flex-row items-center justify-between"
+        >
+          <div className="mx-4">
+            Made by{" "}
+            <a className="underline" href="https://paulbiberstein.me/">
+              Paul Biberstein
+            </a>
+          </div>
+          <a href="https://github.com/P-bibs/MixCapsule" className="mx-4">
+            <IoLogoGithub />
+          </a>
+        </div>
       </div>
     );
   }

@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 
-const useHasSpotifyAuthentication = (httpClient, onReady = () => {}) => {
+const useSpotifyAuthenticationData = (httpClient, onReady = () => {}) => {
   const [isReady, setIsReady] = useState(false);
-  const [spotifyAuthRequired, setSpotifyAuthRequired] = useState(null);
+  const [spotifyData, setSpotifyData] = useState(null);
   useEffect(() => {
     httpClient.getSpotifyAuthenticationData().then(([data, _]) => {
-      console.log(data);
-      const authRequired = data["spotify_auth_required"];
-      setSpotifyAuthRequired(authRequired);
-      onReady(authRequired);
+      setSpotifyData(data);
+      onReady(data);
       setIsReady(true);
     });
   }, []);
 
-  return [spotifyAuthRequired, isReady];
+  return [spotifyData, isReady];
 };
 
 const useGetPlaylistOptions = (httpClient, onReady) => {
@@ -30,4 +28,4 @@ const useGetPlaylistOptions = (httpClient, onReady) => {
   return [options, isReady];
 };
 
-export { useHasSpotifyAuthentication, useGetPlaylistOptions };
+export { useSpotifyAuthenticationData, useGetPlaylistOptions };
