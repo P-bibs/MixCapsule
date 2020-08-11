@@ -77,7 +77,7 @@ export default class AppPage extends React.Component {
         </div>
         <div
           id="body"
-          className="w-2/3 h-full my-12 self-center card flex flex-col items-center justify-center"
+          className="w-2/3 h-px flex-grow my-12 self-center card flex flex-col items-center justify-center"
         >
           <div className="w-full bg-gray-700 rounded-t overflow-x-auto flex flex-row justify-center">
             <DrawerItem
