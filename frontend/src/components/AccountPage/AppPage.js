@@ -24,6 +24,23 @@ const DrawerItem = ({ onClick, children, active }) => {
   );
 };
 
+const PanelSwitcher = ({ selectedIndex, setSelectedIndex }) => {
+  const panels = ["Dashboard", "Playlists", "Options", "Manual Creation"];
+  return (
+    <div className="w-full bg-gray-700 rounded-t overflow-x-auto flex flex-row justify-center">
+      {panels.map((panelName, i) => (
+        <DrawerItem
+          key={i}
+          active={selectedIndex === i}
+          onClick={() => setSelectedIndex(i)}
+        >
+          {panelName}
+        </DrawerItem>
+      ))}
+    </div>
+  );
+};
+
 export default class AppPage extends React.Component {
   constructor(props) {
     super(props);
@@ -79,48 +96,10 @@ export default class AppPage extends React.Component {
           id="body"
           className="w-2/3 h-px flex-grow my-12 self-center card flex flex-col items-center justify-center"
         >
-          <div className="w-full bg-gray-700 rounded-t overflow-x-auto flex flex-row justify-center">
-            <DrawerItem
-              active={this.state.selectedIndex === 0}
-              onClick={() =>
-                this.setState({
-                  selectedIndex: 0,
-                })
-              }
-            >
-              Dashboard
-            </DrawerItem>
-            <DrawerItem
-              active={this.state.selectedIndex === 1}
-              onClick={() =>
-                this.setState({
-                  selectedIndex: 1,
-                })
-              }
-            >
-              Playlists
-            </DrawerItem>
-            <DrawerItem
-              active={this.state.selectedIndex === 2}
-              onClick={() =>
-                this.setState({
-                  selectedIndex: 2,
-                })
-              }
-            >
-              Options
-            </DrawerItem>
-            <DrawerItem
-              active={this.state.selectedIndex === 3}
-              onClick={() =>
-                this.setState({
-                  selectedIndex: 3,
-                })
-              }
-            >
-              Manual Creation
-            </DrawerItem>
-          </div>
+          <PanelSwitcher
+            selectedIndex={this.state.selectedIndex}
+            setSelectedIndex={(x) => this.setState({ selectedIndex: x })}
+          />
           <div className="w-full m-8 flex-grow flex flex-col items-center justify-center">
             {this.state.isLoading && (
               <div>
