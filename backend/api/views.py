@@ -1,7 +1,8 @@
-import datetime, json
+from datetime import datetime
 
 import requests
 from django.conf import settings
+from djang.utils import timezone
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,6 +40,7 @@ class SpotifyAuthenticationView(APIView):
         if user is not None:
             try:
                 spotify_api_data = user.spotifyapidata
+                spotify_api_data.request_refresh()
                 return Response(SpotifyApiDataSerializer(spotify_api_data).data)
             except ObjectDoesNotExist:
                 raise Exception("Error: users spotify api data does not exist")
@@ -78,7 +80,9 @@ class SpotifyAuthenticationView(APIView):
             user_spotify_data = user.spotifyapidata
             user_spotify_data.refresh_token = response_data["refresh_token"]
             user_spotify_data.access_token = response_data["access_token"]
-            user_spotify_data.authentication_date = datetime.date.today()
+            user_spotify_data.access_expires_at = timezone.now() + datetime.timedelta(
+                seconds=response["expires_in"]
+            )
             user_spotify_data.save()
 
             return Response({})

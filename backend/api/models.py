@@ -1,6 +1,8 @@
 import datetime
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+import datetime
 
 from api.spotify_wrapper import (
     add_tracks_to_playlist,
@@ -24,15 +26,33 @@ class Profile(models.Model):
 
 class SpotifyApiData(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    refresh_token = models.TextField()
-    access_token = models.TextField()
-    authentication_date = models.DateField(default=None, blank=True, null=True)
+    refresh_token = models.CharField(max_length=300, blank=True, null=False)
+    access_token = models.CharField(max_length=300, blank=True, null=False)
+    access_expires_at = models.DateTimeField()
 
     def __str__(self):
         return f"{self.user.username}'s spotify api data"
 
     def spotify_auth_required(self):
         return self.refresh_token == ""
+
+    def request_refresh(self, force=False):
+        if not force and timezone.now() < self.access_expires_at:
+            return self.access_token
+
+        secret = settings.SPOTIFY_CLIENT_SECRET
+        id = settings.SPOTIFY_CLIENT_ID
+        refresh_token = self.refresh_token
+
+        response = request_refresh(id, secret, refresh_token)
+
+        self.access_token = response["access_token"]
+        self.access_expires_at = timezone.now() + datetime.timedelta(
+            seconds=response["expires_in"]
+        )
+        self.save()
+
+        return response["access_token"]
 
     def trigger_time_period(self, time_period):
         # TODO: add logic for other time periods
@@ -51,20 +71,14 @@ class SpotifyApiData(models.Model):
         """
         Create a playlist with this data. Return True if successful, False otherwise
         """
-        if self.authentication_date is None:
+        if self.access_token is None:
             print(
                 "WARNING: couldn't create playlist for %s due to missing Spotify authentication"
                 % self.user.username
             )
             return False
 
-        secret = settings.SPOTIFY_CLIENT_SECRET
-        id = settings.SPOTIFY_CLIENT_ID
-        refresh_token = self.refresh_token
-
-        response = request_refresh(id, secret, refresh_token)
-
-        token = response["access_token"]
+        token = self.request_refresh()
 
         top = get_top_tracks(
             token,

@@ -30,7 +30,6 @@ class SpotifyApiDataSerializer(serializers.ModelSerializer):
         fields = [
             "spotify_auth_required",
             "access_token",
-            "authentication_date",
         ]
 
 
