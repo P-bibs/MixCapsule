@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
-from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -176,26 +176,24 @@ class ProfileDetailView(APIView):
             raise Exception("Error: jwt token doesn't correspond to any user")
 
 
-class PlaylistListCreateView(APIView):
+class PlaylistListCreateView(ListCreateAPIView):
+    queryset = GeneratedPlaylist.objects.all()
+    serializer_class = GeneratedPlaylistSerializer
+
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        user = request.user
-
-        if user is not None:
-            playlists = user.generatedplaylist_set
-            return Response(GeneratedPlaylistSerializer(playlists, many=True).data)
-        else:
-            raise Exception("Error: jwt token doesn't correspond to any user")
-
     def post(self, request):
         user = request.user
-
         if user is not None:
             successful = user.spotifyapidata.make_playlist()
             if successful:
-                return Response({}, status=200)
+                new_playlist = user.generatedplaylist_set.all()[
+                    len(user.generatedplaylist_set.all()) - 1
+                ]
+                return Response(
+                    GeneratedPlaylistSerializer(new_playlist).data, status=200
+                )
             else:
                 return Response(
                     {"error": "Server Error: Failed to create playlist"}, status=500
@@ -258,6 +256,36 @@ class PlaylistOptionsDetailView(APIView):
             try:
                 playlist_options = user.playlistoptions
                 return Response(PlaylistOptionsSerializer(playlist_options).data)
+            except ObjectDoesNotExist:
+                raise Exception("Error: users playlist options do not exist")
+
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
+
+    def patch(self, request):
+        user = request.user
+        if user is not None:
+            try:
+                playlist_options = user.playlistoptions
+                serializer = PlaylistOptionsSerializer(
+                    playlist_options, data=request.data, partial=True
+                )
+                if serializer.is_valid():
+                    print(playlist_options)
+                    print(serializer.data)
+                    PlaylistOptions.objects.filter(pk=playlist_options.pk).update(
+                        **request.data
+                    )
+                else:
+                    print("error")
+                    print(serializer.errors)
+                    return Response({}, status=500)
+
+                print(serializer)
+                playlist_options.refresh_from_db()
+                return Response(
+                    PlaylistOptionsSerializer(playlist_options).data, status=200
+                )
             except ObjectDoesNotExist:
                 raise Exception("Error: users playlist options do not exist")
 

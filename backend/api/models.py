@@ -90,8 +90,24 @@ class SpotifyApiData(models.Model):
 
 
 class PlaylistOptions(models.Model):
+    SHORT = "long_term"
+    MEDIUM = "short_term"
+    LONG = "medium_term"
+    HISTORY_DURATION_CHOICES = [
+        (SHORT, "1 month"),
+        (MEDIUM, "6 months"),
+        (LONG, "All time"),
+    ]
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     number_songs = models.PositiveSmallIntegerField(default=50)
+    history_duration = models.CharField(
+        max_length=25,
+        choices=HISTORY_DURATION_CHOICES,
+        blank=False,
+        null=False,
+        default="short_term",
+    )
 
     def __str__(self):
         return f"{self.user.username}'s playlist options"

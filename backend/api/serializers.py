@@ -37,7 +37,7 @@ class SpotifyApiDataSerializer(serializers.ModelSerializer):
 class PlaylistOptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaylistOptions
-        fields = ["number_songs"]
+        fields = ["number_songs", "history_duration"]
 
 
 class GeneratedPlaylistSerializer(serializers.ModelSerializer):

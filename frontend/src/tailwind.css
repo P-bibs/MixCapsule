@@ -18,4 +18,15 @@ h3 {
   @apply rounded shadow-lg;
 }
 
+.Toastify__toast {
+  @apply px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b-md shadow-md;
+}
+.Toastify__toast-body {
+  @apply text-white;
+}
+.Toastify__progress-bar {
+  @apply bg-gray-600;
+  background-image: none;
+}
+
 @tailwind utilities;

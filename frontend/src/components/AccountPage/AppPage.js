@@ -1,6 +1,7 @@
 import React from "react";
 import { CircularProgress } from "@material-ui/core";
 import { IoLogoGithub } from "react-icons/io";
+import { ToastContainer } from "react-toastify";
 
 import * as constants from "../../constants";
 import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
@@ -134,6 +135,18 @@ export default class AppPage extends React.Component {
             <IoLogoGithub />
           </a>
         </div>
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2000}
+          limit={1}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     );
   }

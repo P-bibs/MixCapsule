@@ -229,7 +229,7 @@ const HomePage = () => {
               <li>You don't need to trust Mix Capsule with your password</li>
             </ol>
             <p>
-              If you're ever unsure of the safety, security or privacy of Mix
+              If you're ever unsure of the safety, security, or privacy of Mix
               Capsule, the up-to-date source code is available on{" "}
               <a href="https://github.com/P-bibs/MixCapsule">Github</a>
             </p>

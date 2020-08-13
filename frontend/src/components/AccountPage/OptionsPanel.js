@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import {
   CircularProgress,
@@ -7,73 +7,140 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
+import { ToastContainer, toast } from "react-toastify";
+
 import { useGetPlaylistOptions } from "../../hooks/hooks";
 
-const OptionsPanel = ({ httpClient }) => {
-  const [editedOptions, setEditedOptions] = useState({});
+const OPTION_FIELDS = {
+  NUMBER_SONGS: "NUMBER_SONGS",
+  HISTORY_DURATION: "HISTORY_DURATION",
+};
 
-  const [options, optionsReady] = useGetPlaylistOptions(httpClient, (options) =>
-    setEditedOptions(options)
-  );
+const OptionsPanel = ({ httpClient }) => {
+  const objectReducer = (state, newState) => ({ ...state, ...newState });
+  const [isLoading, setIsLoading] = useState(true);
+  const [options, setOptions] = useReducer(objectReducer, {});
+  const [validationErrors, setValidationErrors] = useReducer(objectReducer, {
+    number_songs: false,
+    history_duration: false,
+  });
+
+  useEffect(() => {
+    setIsLoading(true);
+    httpClient.getOptions().then(([data, response]) => {
+      setOptions(data);
+      setIsLoading(false);
+    });
+  }, []);
 
   const handleChange = (event, target) => {
-    if (target === "numberSongs") {
-      const withoutInvalidCharacters = event.target.replace(/[^0-9]/g, "");
-      setEditedOptions((state) => ({
-        ...state,
+    if (target === OPTION_FIELDS.NUMBER_SONGS) {
+      const withoutInvalidCharacters = event.target.value.replace(
+        /[^0-9]/g,
+        ""
+      );
+      setOptions({
         number_songs: withoutInvalidCharacters,
-      }));
-    } else if (target === "historyDuration") {
-      setEditedOptions((state) => ({
-        ...state,
+      });
+    } else if (target === OPTION_FIELDS.HISTORY_DURATION) {
+      setOptions({
         history_duration: event.target.value,
-      }));
+      });
     }
   };
 
+  /**
+   * Validates form fields
+   * @returns {boolean} true if no errors, false otherwise
+   */
+  const validateOptions = () => {
+    const numberSongsError = !(
+      !isNaN(parseInt(options.number_songs)) &&
+      options.number_songs > 0 &&
+      options.number_songs <= 100
+    );
+
+    const historyDurationError = ![
+      "short_term",
+      "medium_term",
+      "long_term",
+    ].includes(options.history_duration);
+
+    setValidationErrors({
+      number_songs: numberSongsError,
+      history_duration: historyDurationError,
+    });
+
+    return !(numberSongsError || historyDurationError);
+  };
+
   const saveOptions = () => {
-    httpClient.updateOptions(editedOptions).then(([data, response]) => {
-      console.log(data);
+    if (!validateOptions()) {
+      return;
+    }
+    httpClient.updateOptions(options).then(([data, response]) => {
+      if (response.status === 200) {
+        toast("Preferences updated successfully!");
+      } else {
+        toast("Uh-oh, an error occurred!");
+      }
     });
   };
 
-  if (!optionsReady) {
+  if (isLoading) {
     return <CircularProgress />;
   } else {
     return (
-      <div id="OptionsPanel" className="flex flex-col items-center">
-        <h1>MixCapsule Options</h1>
-        <div>Number of Songs: </div>
-        <input
-          onChange={(e) => {
-            handleChange(e, "number_songs");
-          }}
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          value={editedOptions.number_songs}
-        />
-        <div className="mt-8">
-          <FormControl variant="outlined" className="w-32">
-            <InputLabel>History Duration</InputLabel>
-            <Select
-              native
-              value={editedOptions.history_duration}
-              onChange={(event) => handleChange(event, "history_duration")}
-              inputProps={{
-                name: "History Duration",
+      <div
+        id="OptionsPanel"
+        className="w-full h-full flex flex-col items-center"
+      >
+        <h2>MixCapsule Options</h2>
+        <div className="w-full h-px my-auto flex-grow flex flex-col items-center justify-center">
+          <div className="h-24 text-center">
+            <div className="mb-2">Number of Songs: </div>
+            <input
+              onChange={(e) => {
+                handleChange(e, OPTION_FIELDS.NUMBER_SONGS);
               }}
-              label="History Duration"
-            >
-              <option value={"short"}>4 weeks</option>
-              <option value={"medium"}>6 months</option>
-              <option value={"long"}>All time</option>
-            </Select>
-          </FormControl>
-        </div>
-        <br />
+              className="w-24 py-2 px-3 shadow appearance-none text-center border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={options.number_songs}
+            />
+            {validationErrors.number_songs && (
+              <div className="text-sm text-red-600">
+                Must be a number from 1 to 100
+              </div>
+            )}
+          </div>
+          <div className="h-24 mt-8">
+            <FormControl variant="outlined" className="w-32">
+              <InputLabel>History Duration</InputLabel>
+              <Select
+                native
+                value={options.history_duration}
+                onChange={(event) =>
+                  handleChange(event, OPTION_FIELDS.HISTORY_DURATION)
+                }
+                inputProps={{
+                  name: "History Duration",
+                }}
+                label="History Duration"
+              >
+                <option value={"short_term"}>4 weeks</option>
+                <option value={"medium_term"}>6 months</option>
+                <option value={"long_term"}>All time</option>
+              </Select>
+            </FormControl>
+            {validationErrors.history_duration && (
+              <div className="text-sm text-red-600">Error</div>
+            )}
+          </div>
+          <br />
 
-        <Button variant="contained" onClick={() => saveOptions()}>
-          Apply
-        </Button>
+          <Button variant="contained" onClick={() => saveOptions()}>
+            Apply
+          </Button>
+        </div>
       </div>
     );
   }
