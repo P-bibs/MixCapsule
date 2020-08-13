@@ -29,8 +29,6 @@ npm start
 **Services/Scripts**
 ```bash
 cd scripts
-mv .env.example .env
-nano .env # Fill in missing credentials
 chmod +x trigger-month.sh
 
 cd ../services

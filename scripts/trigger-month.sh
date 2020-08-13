@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 source ../venv/bin/activate
-python trigger-time.py month
+source ../.env
+python ../backend/manage.py runscript trigger-time --script-args month
