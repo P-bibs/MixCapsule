@@ -99,7 +99,7 @@ export default class MixCapsuleHttpClient {
     console.error("ERROR refresh token expired. Sending back to login screen");
     setTimeout(() => {
       window.location.href = "/";
-    }, 10000);
+    }, 2000);
   }
 
   getUserData() {

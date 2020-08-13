@@ -2,7 +2,7 @@ from datetime import datetime
 
 import requests
 from django.conf import settings
-from djang.utils import timezone
+from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
