@@ -66,7 +66,11 @@ class SpotifyApiData(models.Model):
 
         token = response["access_token"]
 
-        top = get_top_tracks(token)
+        top = get_top_tracks(
+            token,
+            self.user.playlistoptions.number_songs,
+            self.user.playlistoptions.history_duration,
+        )
 
         top_tracks = top["items"]
         top_track_ids = list(map(lambda x: x["id"], top_tracks))

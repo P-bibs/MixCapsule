@@ -29,14 +29,14 @@ def request_refresh(id, secret, refresh_token):
     return json.loads(response.text)
 
 
-def get_top_tracks(token):
+def get_top_tracks(token, number_songs, time_range):
     """Returns top 50 tracks over last four weeks"""
 
     url = "https://api.spotify.com/v1/me/top/tracks"
 
     headers = {"Authorization": "Bearer " + token}
 
-    query = {"limit": 50, "time_range": "short_term"}
+    query = {"limit": number_songs, "time_range": time_range}
 
     response = requests.get(url, headers=headers, params=query)
 

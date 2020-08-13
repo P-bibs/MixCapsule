@@ -57,7 +57,7 @@ const OptionsPanel = ({ httpClient }) => {
     const numberSongsError = !(
       !isNaN(parseInt(options.number_songs)) &&
       options.number_songs > 0 &&
-      options.number_songs <= 100
+      options.number_songs <= 50
     );
 
     const historyDurationError = ![
