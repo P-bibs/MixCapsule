@@ -29,8 +29,12 @@ module.exports = (shipit) => {
 
   shipit.task("deployBackend", async () => {
     await shipit.copyToRemote("backend/", REMOTE_PROJECT_PATH + "backend");
-    await shipit.remote("rm backend/backend/settings.py", { cwd: REMOTE_PROJECT_PATH + "backend/backend"});
-    await shipit.remote("mv prod_settings.py settings.py", { cwd: REMOTE_PROJECT_PATH + "backend/backend"});
+    await shipit.remote("rm settings.py", {
+      cwd: REMOTE_PROJECT_PATH + "backend/backend",
+    });
+    await shipit.remote("mv prod_settings.py settings.py", {
+      cwd: REMOTE_PROJECT_PATH + "backend/backend",
+    });
   });
 
   shipit.task("copyEnv", async () => {
@@ -60,11 +64,11 @@ module.exports = (shipit) => {
   });
 
   shipit.task("deployScripts", async () => {
-    await shipit.copyToRemote("scripts/", REMOTE_PROJECT_PATH + "scripts")
+    await shipit.copyToRemote("scripts/", REMOTE_PROJECT_PATH + "scripts");
   });
 
   shipit.task("deployServices", async () => {
-    await shipit.copyToRemote("services/", REMOTE_PROJECT_PATH + "services")
+    await shipit.copyToRemote("services/", REMOTE_PROJECT_PATH + "services");
   });
 };
 
