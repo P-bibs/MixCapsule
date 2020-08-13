@@ -39,7 +39,7 @@ const PlaylistsPanel = ({ httpClient }) => {
           })
         )
       );
-      setPlaylistDetails(_playlistDetails);
+      setPlaylistDetails(_playlistDetails.reverse());
       setIsLoading(false);
     };
     asyncWrapper();
