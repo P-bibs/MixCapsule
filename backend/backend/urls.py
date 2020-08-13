@@ -22,7 +22,6 @@ from api import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("admin/trigger/<slug:time_period>", views.TriggerTimePeriodView.as_view()),
     path("user/", views.UserDetailView.as_view()),
     path("user/profile/", views.ProfileDetailView.as_view()),
     path("user/playlists/", views.PlaylistListCreateView.as_view()),
