@@ -107,16 +107,16 @@ const DashboardPanel = ({ httpClient }) => {
       return (
         <>
           <h2>Dashboard</h2>
-          <div className="w-full h-full divide-y flex flex-col">
-            <div className="w-full h-full flex-shrink mx-4">
-              <h3 className="h-full flex flex-col justify-center">
-                You're next playlist will be created on {getNextMonth()} 1st
+          <div className="w-full lg:h-full divide-y flex flex-col">
+            <div className="w-full lg:h-full flex-shrink px-4">
+              <h3 className="lg:h-full lg:flex py-4 flex-col justify-center">
+                Your next playlist will be created on {getNextMonth()} 1st
               </h3>
             </div>
-            <div className="w-full h-full flex-shrink divide-x flex flex-row">
-              <div className="w-full flex-shrink flex flex-col">
-                <h3 className="mt-3">You're most recent playlist:</h3>
-                <div className="h-px flex-grow flex flex-col justify-center items-center">
+            <div className="w-full lg:h-full flex-shrink divide-y lg:divide-x lg:flex flex-row">
+              <div className="w-full flex-shrink lg:flex flex-col">
+                <h3 className="mt-3">Your most recent playlist:</h3>
+                <div className="flex-grow flex flex-col justify-center items-center justify-center">
                   {recentPlaylist === undefined ? (
                     <CircularProgress />
                   ) : recentPlaylist === null ? (
@@ -129,9 +129,9 @@ const DashboardPanel = ({ httpClient }) => {
                   )}
                 </div>
               </div>
-              <div className="w-full flex-shrink flex flex-col">
+              <div className="w-full flex-shrink lg:flex flex-col">
                 <h3 className="mt-3">Manual Creation</h3>
-                <div className="h-px flex-grow flex flex-col justify-center items-center">
+                <div className="flex-grow flex flex-col justify-center items-center">
                   <div className="mx-8 mb-6">
                     Feeling impatient? Click below to make a playlist of your
                     top tracks right now!

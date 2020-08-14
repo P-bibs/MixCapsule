@@ -82,7 +82,10 @@ export default class AppPage extends React.Component {
 
   render() {
     return (
-      <div id="AppPage" className="h-screen w-full m-0 p-0 flex flex-col">
+      <div
+        id="AppPage"
+        className="min-h-screen lg:h-screen w-full m-0 p-0 flex flex-col justify-between"
+      >
         <div
           id="header"
           className="m-0 p-0 bg-purple-900 shadow sticky top-0 flex flex-row items-center justify-between"
@@ -95,7 +98,7 @@ export default class AppPage extends React.Component {
         </div>
         <div
           id="body"
-          className="w-2/3 h-px flex-grow my-12 self-center card flex flex-col items-center justify-center"
+          className="w-11/12 lg:w-2/3 flex-grow my-6 lg:my-12 self-center card flex flex-col items-center justify-center"
         >
           <PanelSwitcher
             selectedIndex={this.state.selectedIndex}

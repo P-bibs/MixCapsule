@@ -91,12 +91,9 @@ const OptionsPanel = ({ httpClient }) => {
     return <CircularProgress />;
   } else {
     return (
-      <div
-        id="OptionsPanel"
-        className="w-full h-full flex flex-col items-center"
-      >
+      <>
         <h2>MixCapsule Options</h2>
-        <div className="w-full h-px my-auto flex-grow flex flex-col items-center justify-center">
+        <div className="w-full my-auto flex-grow flex flex-col items-center justify-center">
           <div className="h-24 text-center">
             <div className="mb-2">Number of Songs: </div>
             <input
@@ -141,7 +138,7 @@ const OptionsPanel = ({ httpClient }) => {
             Apply
           </Button>
         </div>
-      </div>
+      </>
     );
   }
 };

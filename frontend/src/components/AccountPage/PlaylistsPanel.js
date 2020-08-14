@@ -74,9 +74,9 @@ const PlaylistsPanel = ({ httpClient }) => {
     return <div>Please authenticate with Spotify</div>;
   } else {
     return (
-      <div className="w-full h-px flex-grow flex flex-col">
+      <div className="w-full flex-grow flex flex-col">
         <h2 className="mb-5">Mix Capsule History</h2>
-        <div className="w-full h-px flex-grow px-4 overflow-y-auto divide-y">
+        <div className="w-full flex-grow px-4 overflow-y-auto divide-y">
           {playlistDetails.map((playlist, i) => (
             <PlaylistListItem key={i} playlist={playlist} />
           ))}
