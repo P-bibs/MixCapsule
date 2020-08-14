@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 import requests
 from django.conf import settings
@@ -81,7 +81,7 @@ class SpotifyAuthenticationView(APIView):
             user_spotify_data.refresh_token = response_data["refresh_token"]
             user_spotify_data.access_token = response_data["access_token"]
             user_spotify_data.access_expires_at = timezone.now() + datetime.timedelta(
-                seconds=response["expires_in"]
+                seconds=response_data["expires_in"]
             )
             user_spotify_data.save()
 

@@ -106,6 +106,10 @@ export default class MixCapsuleHttpClient {
     return this.makeAuthenticatedRequest("/user/");
   }
 
+  getProfileData() {
+    return this.makeAuthenticatedRequest("/user/profile/");
+  }
+
   getSpotifyAuthenticationData() {
     return this.makeAuthenticatedRequest("/user/spotify-authentication/");
   }

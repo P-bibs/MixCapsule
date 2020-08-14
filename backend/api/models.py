@@ -28,7 +28,7 @@ class SpotifyApiData(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     refresh_token = models.CharField(max_length=300, blank=True, null=False)
     access_token = models.CharField(max_length=300, blank=True, null=False)
-    access_expires_at = models.DateTimeField()
+    access_expires_at = models.DateTimeField(null=True)
 
     def __str__(self):
         return f"{self.user.username}'s spotify api data"
@@ -37,7 +37,15 @@ class SpotifyApiData(models.Model):
         return self.refresh_token == ""
 
     def request_refresh(self, force=False):
-        if not force and timezone.now() < self.access_expires_at:
+        # If the user doesn't have spotify data, return
+        if self.refresh_token == "":
+            return
+        # If the cached values are still usable, return
+        if (
+            not force
+            and self.access_expires_at is not None
+            and timezone.now() < self.access_expires_at
+        ):
             return self.access_token
 
         secret = settings.SPOTIFY_CLIENT_SECRET

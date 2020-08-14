@@ -3,6 +3,29 @@ import PropTypes from "prop-types";
 import { CircularProgress } from "@material-ui/core";
 import SpotifyWebApi from "spotify-web-api-js";
 
+export const PlaylistListItem = ({ playlist }) => (
+  <div className="w-full h-24 p-3 flex flex-row items-center justify-between">
+    <div className="h-full flex flex-row">
+      <img
+        className="h-full w-auto ml-2 object-scale-down"
+        src={playlist.images[0].url}
+      />
+      <div className="ml-3 my-auto">
+        <a
+          className="no-underline hover:underline font-bold text-lg"
+          href={playlist.external_urls.spotify}
+          target="_blank"
+          rel={"noreferrer"}
+        >
+          {playlist.name}
+        </a>
+        <div>Tracks: {playlist.tracks.total}</div>
+      </div>
+    </div>
+    <div className="mr-3">{playlist.public ? "Public" : "Private"}</div>
+  </div>
+);
+
 const PlaylistsPanel = ({ httpClient }) => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -55,31 +78,7 @@ const PlaylistsPanel = ({ httpClient }) => {
         <h2 className="mb-5">Mix Capsule History</h2>
         <div className="w-full h-px flex-grow px-4 overflow-y-auto divide-y">
           {playlistDetails.map((playlist, i) => (
-            <div
-              className="w-full h-24 p-3 flex flex-row items-center justify-between"
-              key={i}
-            >
-              <div className="h-full flex flex-row">
-                <img
-                  className="h-full w-auto ml-2 object-scale-down"
-                  src={playlist.images[0].url}
-                />
-                <div className="ml-3 my-auto">
-                  <a
-                    className="no-underline hover:underline font-bold text-lg"
-                    href={playlist.external_urls.spotify}
-                    target="_blank"
-                    rel={"noreferrer"}
-                  >
-                    {playlist.name}
-                  </a>
-                  <div>Tracks: {playlist.tracks.total}</div>
-                </div>
-              </div>
-              <div className="mr-3">
-                {playlist.public ? "Public" : "Private"}
-              </div>
-            </div>
+            <PlaylistListItem key={i} playlist={playlist} />
           ))}
         </div>
       </div>

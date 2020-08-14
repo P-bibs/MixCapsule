@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
-const useSpotifyAuthenticationData = (httpClient, onReady = () => {}) => {
+export const useSpotifyAuthenticationData = (
+  httpClient,
+  onReady = () => {}
+) => {
   const [isReady, setIsReady] = useState(false);
   const [spotifyData, setSpotifyData] = useState(null);
   useEffect(() => {
@@ -14,7 +17,7 @@ const useSpotifyAuthenticationData = (httpClient, onReady = () => {}) => {
   return [spotifyData, isReady];
 };
 
-const useGetPlaylistOptions = (httpClient, onReady) => {
+export const useGetPlaylistOptions = (httpClient, onReady = () => {}) => {
   const [isReady, setIsReady] = useState(false);
   const [options, setOptions] = useState(null);
   useEffect(() => {
@@ -27,5 +30,3 @@ const useGetPlaylistOptions = (httpClient, onReady) => {
 
   return [options, isReady];
 };
-
-export { useSpotifyAuthenticationData, useGetPlaylistOptions };
