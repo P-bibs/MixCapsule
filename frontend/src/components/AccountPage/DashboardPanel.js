@@ -120,7 +120,9 @@ const DashboardPanel = ({ httpClient }) => {
                   {recentPlaylist === undefined ? (
                     <CircularProgress />
                   ) : recentPlaylist === null ? (
-                    "You haven't created any playlists yet"
+                    <div className="py-4">
+                      You haven't created any playlists yet
+                    </div>
                   ) : (
                     <>
                       {console.log(recentPlaylist)}
