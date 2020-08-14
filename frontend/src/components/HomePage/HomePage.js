@@ -123,31 +123,23 @@ const HomePage = () => {
           <h2 className="my-4 text-center text-4xl text-white">About</h2>
           <div className="w-3/4 lg:w-1/2 m-auto text-white">
             <p>
-              We all know music can evoke strong memories of the past, as has
-              been studied{" "}
-              <a href="https://www.bbc.com/culture/article/20140417-why-does-music-evoke-memories">
-                many
-              </a>{" "}
-              times{" "}
-              <a href="https://www.psychologytoday.com/us/blog/the-athletes-way/201312/why-do-the-songs-your-past-evoke-such-vivid-memories">
-                over
-              </a>
-              {". "}
-              The trouble is, these recollections often come only by chance,
-              when you happen to hear a song from your past on the radio or in a
-              waiting room. If you take care to record all the music you've
-              listened to and when, it's easier to connect to the past, but that
-              recording process takes far too much time to be worth it.
+              When I started college, I got the advice from a good friend to
+              make CDs of all the songs I listened to each semester so I could
+              listen to them years down the line and be transported back. It was
+              a great idea (after I decided to exchange "CDs" for "playlists"),
+              but I had a hard time remembering to keep tracks of songs as my
+              tastes changed, and I quickly started finding holes in my
+              self-recorded music history. To solve that problem, I created Mix
+              Capsule.
             </p>
             <br />
             <p>
-              This is where Mix Capsule comes in. Once you create your account
-              and connect to Spotify, Mix Capsule will deposit a playlist in
-              your library every month containing your most listened to songs
-              for that month. Now, whenever you want to kick back and listen to
-              music that reminds you of the past, flip through your Mix Capsule
-              playlists and see what you were listening to 1 month, 6 months, or
-              even a year ago.
+              Once you create your account and connect to Spotify, Mix Capsule
+              will deposit a playlist in your library every month containing
+              your most listened to songs for that month. Now, whenever you want
+              to kick back and listen to music that reminds you of the past,
+              flip through your Mix Capsule playlists and see what you were
+              listening to 1 month, 6 months, or even a year ago.
             </p>
             <br />
             <div className="px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b shadow-md">
@@ -158,8 +150,8 @@ const HomePage = () => {
                 <div>
                   <p className="font-bold">Playlist Folders</p>
                   <p className="text-sm">
-                    If you're the kind of person that likes to stay organized,
-                    we recommend putting your Mix Capsule playlists in a{" "}
+                    If you're the kind of person that likes to stay organized, I
+                    recommend putting your Mix Capsule playlists in a{" "}
                     <a href="https://support.spotify.com/us/using_spotify/playlists/playlist-folders/">
                       playlist folder
                     </a>{" "}
