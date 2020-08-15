@@ -1,5 +1,28 @@
 import json
 import requests
+import tekore as tk
+
+
+def exchange_code(id, secret, redirect, code):
+    response = requests.post(
+        "https://accounts.spotify.com/api/token",
+        data={
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": redirect,
+            "client_id": id,
+            "client_secret": secret,
+        },
+    )
+    response_data = response.json()
+    if "error" in response_data:
+        print(response_data)
+        raise Exception(
+            "Error exchanging code for token: %s: %s"
+            % (response_data["error"], response_data["error_description"])
+        )
+
+    return response_data
 
 
 def request_refresh(id, secret, refresh_token):

@@ -60,19 +60,26 @@ export default class AppPage extends React.Component {
 
   checkForAndSendSpotifyCode = () => {
     // Search for spotify access token in case we've just been redirected
-    const params = new URL(window.location).searchParams;
+    const url = new URL(window.location);
+    if (url.pathname !== "/app/redirect") {
+      return;
+    }
+    this.state = { ...this.state, selectedIndex: -1 };
+    const params = url.searchParams;
     if (params.has("code")) {
       const spotifyCode = params.get("code");
       console.log(`found api code ${spotifyCode}. Sending backend request...`);
-      this.httpClient
-        .sendSpotifyAuthenticationData(spotifyCode)
-        .then(([_, response]) => {
+      MixCapsuleHttpClient.requestToken(spotifyCode).then(
+        ([data, response]) => {
           console.log("Successfully POSTed spotify auth");
+          localStorage.setItem("accessToken", data.access);
+          localStorage.setItem("refreshToken", data.refresh);
           if (response.status === 200) {
             console.log("redirecting without code");
             window.location.href = "/app";
           }
-        });
+        }
+      );
     } else if (window.location.hash.includes("error")) {
       console.error(window.location.hash);
     }

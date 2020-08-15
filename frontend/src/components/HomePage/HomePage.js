@@ -1,11 +1,10 @@
 import React from "react";
-import GoogleLogin from "react-google-login";
 import { IoIosAlarm, IoMdSettings, IoLogoGithub } from "react-icons/io";
 import { FiZap } from "react-icons/fi";
-
-import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
+import * as constants from "../../constants";
+import { generateRedirectUri } from "../../httpClients/SpotifyHttpClient";
 import mcLogo from "../../assets/MC_OrangePurple.png";
-import gLogo from "../../assets/g_logo.js";
+import spotifyIcon from "../../assets/Spotify_Icon_RGB_White.png";
 import audioPlayerIllustration from "../../assets/AudioPlayer.png";
 
 // Tailwind info icon svg
@@ -30,48 +29,36 @@ const FeatureCard = ({ icon, title, children }) => (
 );
 
 const HomePage = () => {
-  const onSignIn = (googleUser) => {
-    const profile = googleUser.getBasicProfile();
-    console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log("id_token: " + googleUser.getAuthResponse().id_token);
-    console.log("Name: " + profile.getName());
-    console.log("Image URL: " + profile.getImageUrl());
-    console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-    const payload = {
-      google_token: googleUser.getAuthResponse().id_token,
-    };
-    MixCapsuleHttpClient.requestToken(
-      googleUser.getAuthResponse().id_token
-    ).then(([data, response]) => {
-      console.log(data);
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-      window.location.href = "/app";
-    });
-  };
-
   /**
-   * A Google login button with customizable text
+   * A Spotify login button with customizable text
    * @param {string} children - the text to render in the button
    */
-  const GButton = ({ children }) => (
-    <GoogleLogin
-      clientId="701121595899-aqsiqmiqfl58n3uup5ojss0pam6638q7.apps.googleusercontent.com"
-      onSuccess={(user) => onSignIn(user)}
-      onFailure={(err) => console.log(err)}
-      render={(renderProps) => (
-        <button
-          onClick={renderProps.onClick}
-          disabled={renderProps.disabled}
-          className="h-7 p-2 bg-white rounded-sm shadow-lg active:shadow-sm flex flex-row items-center disabled:opacity-50"
-        >
-          <div className="mr-2">{gLogo}</div>
-          <div className="text-sm text-gray-700">{children}</div>
-        </button>
-      )}
-    />
-  );
+  const SpotifyButton = () => {
+    const redirectToSpotify = () => {
+      // TODO: add state
+      const state = "";
+      window.location = generateRedirectUri(
+        constants.SPOTIFY_CLIENT_ID,
+        constants.REDIRECT_URI,
+        constants.SCOPES,
+        state
+      );
+    };
+    return (
+      <button
+        className="h-7 p-2 rounded-sm shadow-lg active:shadow-sm flex flex-row items-center disabled:opacity-50"
+        style={{ backgroundColor: "#1DB954" }}
+        onClick={redirectToSpotify}
+      >
+        <img
+          className="mr-2 object-contain"
+          style={{ width: "21px" }}
+          src={spotifyIcon}
+        />
+        <div className="text-sm text-white">Login with Spotify</div>
+      </button>
+    );
+  };
 
   return (
     <div id="HomePage" className="m-0 p-0 flex flex-col">
@@ -85,7 +72,7 @@ const HomePage = () => {
           </a>
         </div>
         <div className="mx-2">
-          <GButton>Sign in with Google</GButton>
+          <SpotifyButton>Sign in with Google</SpotifyButton>
         </div>
       </div>
       <div
@@ -108,7 +95,7 @@ const HomePage = () => {
             <div className="text-left  font-bold">
               Login below to get started
               <div className="w-max-content mt-2">
-                <GButton>Sign in with Google</GButton>
+                <SpotifyButton>Sign in with Google</SpotifyButton>
               </div>
             </div>
           </div>
@@ -134,12 +121,12 @@ const HomePage = () => {
             </p>
             <br />
             <p>
-              Once you create your account and connect to Spotify, Mix Capsule
-              will deposit a playlist in your library every month containing
-              your most listened to songs for that month. Now, whenever you want
-              to kick back and listen to music that reminds you of the past,
-              flip through your Mix Capsule playlists and see what you were
-              listening to 1 month, 6 months, or even a year ago.
+              Once you login with Spotify, Mix Capsule will deposit a playlist
+              in your library every month containing your most listened to songs
+              for that month. Now, whenever you want to kick back and listen to
+              music that reminds you of the past, flip through your Mix Capsule
+              playlists and see what you were listening to 1 month, 6 months, or
+              even a year ago.
             </p>
             <br />
             <div className="px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b shadow-md">
@@ -174,14 +161,14 @@ const HomePage = () => {
             </FeatureCard>
             <FeatureCard icon={<IoMdSettings />} title="Automatic">
               After the initial setup, Mix Capsule works without any interaction
-              on your part. The sooner you create your account, the more Mix
-              Capsule playlist you'll have to look back on in the future!
+              on your part. The sooner you create your account, the more
+              playlists you'll have to look back on in the future!
             </FeatureCard>
             <FeatureCard icon={<IoIosAlarm />} title="Customizable">
-              Maybe you want your Mix Capsule playlist generated every two
-              months instead of every month, or maybe you want each one to have
-              100 songs instead of 50. However you want it, Mix Capsule has
-              options to tune your playlist generation exactly as you want it.
+              Maybe you want your playlist generated every two months instead of
+              every month, or maybe you want each one to have 100 songs instead
+              of 50. However you want it, Mix Capsule has options to tune your
+              playlist generation exactly as you want it.
             </FeatureCard>
           </div>
         </div>
@@ -197,6 +184,7 @@ const HomePage = () => {
             <ul className="my-2 list-disc list-inside lis">
               <li>View content you have recently played</li>
               <li>View your top artists and content</li>
+              <li>View your email address</li>
               <li>Create, edit, and follow your private playlists</li>
             </ul>
             <p>
@@ -208,22 +196,6 @@ const HomePage = () => {
               </a>{" "}
               (be aware that this will stop your Mix Capsule playlists from
               being generated).
-            </p>
-            <br />
-            <p>
-              For login and customization purposes, Mix Capsule integrates with
-              your Google account. This benefits you in two ways:
-            </p>
-            <ol className="my-2 list-decimal list-inside">
-              <li>
-                You don't need to remember another set of login credentials
-              </li>
-              <li>You don't need to trust Mix Capsule with your password</li>
-            </ol>
-            <p>
-              If you're ever unsure of the safety, security, or privacy of Mix
-              Capsule, the up-to-date source code is available on{" "}
-              <a href="https://github.com/P-bibs/MixCapsule">Github</a>
             </p>
             <br />
           </div>

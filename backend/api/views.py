@@ -1,20 +1,17 @@
 import datetime
 
-import requests
 from django.conf import settings
 from django.utils import timezone
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from google.auth.transport import requests as google_requests
-from google.oauth2 import id_token
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
+import tekore as tk
 
 from api.models import Profile, PlaylistOptions, SpotifyApiData, GeneratedPlaylist
 from api.serializers import (
@@ -24,6 +21,7 @@ from api.serializers import (
     ProfileSerializer,
     GeneratedPlaylistSerializer,
 )
+import api.spotify_wrapper as spotify_wrapper
 
 
 class HealthCheckView(APIView):
@@ -47,111 +45,55 @@ class SpotifyAuthenticationView(APIView):
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 
-    def post(self, request):
-        user = request.user
-        code = request.data["code"]
-
-        if user is not None:
-            CLIENT_ID = settings.SPOTIFY_CLIENT_ID
-            CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
-            REDIRECT_URI = settings.REDIRECT_URI
-
-            print(REDIRECT_URI)
-            response = requests.post(
-                "https://accounts.spotify.com/api/token",
-                data={
-                    "grant_type": "authorization_code",
-                    "code": code,
-                    "redirect_uri": REDIRECT_URI,
-                    "client_id": CLIENT_ID,
-                    "client_secret": CLIENT_SECRET,
-                },
-            )
-            response_data = response.json()
-            print(response_data)
-            if "error" in response_data:
-                return Response(
-                    {
-                        "error": "Spotify API error: "
-                        + response_data["error_description"]
-                    },
-                    status=400,
-                )
-            user_spotify_data = user.spotifyapidata
-            user_spotify_data.refresh_token = response_data["refresh_token"]
-            user_spotify_data.access_token = response_data["access_token"]
-            user_spotify_data.access_expires_at = timezone.now() + datetime.timedelta(
-                seconds=response_data["expires_in"]
-            )
-            user_spotify_data.save()
-
-            return Response({})
-        else:
-            raise Exception("Error: jwt token doesn't correspond to any user")
-
 
 class TokenRequestView(APIView):
     def post(self, request):
-        google_token = request.data["google_token"]
+        code = request.data["code"]
 
-        token_info = verify_google_jwt(google_token)
-        if token_info:
-            user = User.objects.filter(email=token_info["email"])
+        CLIENT_ID = settings.SPOTIFY_CLIENT_ID
+        CLIENT_SECRET = settings.SPOTIFY_CLIENT_SECRET
+        REDIRECT_URI = settings.REDIRECT_URI
 
-            # If this is a new user, create an entry for them
-            if len(user) == 0:
-                new_user = User.objects.create_user(
-                    token_info["email"],
-                    token_info["email"],
-                    "",
-                    first_name=token_info["given_name"],
-                    last_name=token_info["family_name"],
-                )
-                new_user.set_unusable_password()
-                new_user.save()
-
-                new_user_profile = Profile(user=new_user)
-                new_user_profile.save()
-
-                new_user_data = SpotifyApiData(user=new_user)
-                new_user_data.save()
-
-                new_user_options = PlaylistOptions(user=new_user)
-                new_user_options.save()
-
-                user = new_user
-            else:
-                user = user[0]
-
-            refresh = RefreshToken.for_user(user)
-            return Response(
-                {"refresh": str(refresh), "access": str(refresh.access_token),}
-            )
-
-
-def verify_google_jwt(token):
-    CLIENT_ID = settings.GOOGLE_CLIENT_ID
-    try:
-        # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(
-            token, google_requests.Request(), CLIENT_ID
+        auth_info = spotify_wrapper.exchange_code(
+            CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, code
         )
+        access_token = auth_info["access_token"]
 
-        # Or, if multiple clients access the backend server:
-        # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-        # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-        #     raise ValueError('Could not verify audience.')
+        spotify = tk.Spotify(access_token)
+        user_info = spotify.current_user()
 
-        if idinfo["iss"] not in ["accounts.google.com", "https://accounts.google.com"]:
-            raise ValueError("Wrong issuer.")
+        user_id = user_info.id
+        user_email = user_info.email
 
-        # If auth request is from a G Suite domain:
-        # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
-        #     raise ValueError('Wrong hosted domain.')
+        user = User.objects.filter(username=user_id)
 
-        return idinfo
-    except ValueError:
-        return False
+        # If this is a new user, create an entry for them
+        if len(user) == 0:
+            new_user = User.objects.create_user(user_id, user_email, "",)
+            new_user.set_unusable_password()
+            new_user.save()
+
+            new_user_profile = Profile(user=new_user)
+            new_user_profile.save()
+
+            new_user_data = SpotifyApiData(
+                user=new_user,
+                access_token=auth_info["access_token"],
+                refresh_token=auth_info["refresh_token"],
+                access_expires_at=timezone.now()
+                + datetime.timedelta(seconds=auth_info["expires_in"]),
+            )
+            new_user_data.save()
+
+            new_user_options = PlaylistOptions(user=new_user)
+            new_user_options.save()
+
+            user = new_user
+        else:
+            user = user[0]
+
+        refresh = RefreshToken.for_user(user)
+        return Response({"refresh": str(refresh), "access": str(refresh.access_token),})
 
 
 # Generic get/update view

@@ -7,6 +7,6 @@ export const APP_PATH = DEBUG
   : "https://mixcapsule.paulbiberstein.me";
 
 export const SPOTIFY_CLIENT_ID = "d4027e74192f44a3a96139dc6d941b9c";
-export const REDIRECT_URI = `${APP_PATH}/app`;
+export const REDIRECT_URI = `${APP_PATH}/app/redirect`;
 export const SCOPES =
-  "user-top-read user-read-recently-played playlist-modify-private";
+  "user-top-read user-read-email user-read-recently-played playlist-modify-private";

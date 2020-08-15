@@ -4,12 +4,7 @@ from django.db import models
 from django.utils import timezone
 import datetime
 
-from api.spotify_wrapper import (
-    add_tracks_to_playlist,
-    create_playlist,
-    get_top_tracks,
-    request_refresh,
-)
+import api.spotify_wrapper as spotify_wrapper
 
 
 class Profile(models.Model):
@@ -52,7 +47,7 @@ class SpotifyApiData(models.Model):
         id = settings.SPOTIFY_CLIENT_ID
         refresh_token = self.refresh_token
 
-        response = request_refresh(id, secret, refresh_token)
+        response = spotify_wrapper.request_refresh(id, secret, refresh_token)
 
         self.access_token = response["access_token"]
         self.access_expires_at = timezone.now() + datetime.timedelta(
@@ -88,7 +83,7 @@ class SpotifyApiData(models.Model):
 
         token = self.request_refresh()
 
-        top = get_top_tracks(
+        top = spotify_wrapper.get_top_tracks(
             token,
             self.user.playlistoptions.number_songs,
             self.user.playlistoptions.history_duration,
@@ -102,13 +97,13 @@ class SpotifyApiData(models.Model):
         month = date.month
         year = date.year
 
-        playlist_id = create_playlist(
+        playlist_id = spotify_wrapper.create_playlist(
             token, str(month) + "/" + str(year) + " MixCapsule"
         )
 
-        add_tracks_to_playlist(token, playlist_id, top_track_uris)
+        spotify_wrapper.add_tracks_to_playlist(token, playlist_id, top_track_uris)
 
-        # record new playlist in GneratedPlaylists table
+        # record new playlist in GeneratedPlaylists table
         new_playlist_object = GeneratedPlaylist(user=self.user, spotify_id=playlist_id)
         new_playlist_object.save()
 

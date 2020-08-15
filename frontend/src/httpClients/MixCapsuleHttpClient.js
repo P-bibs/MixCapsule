@@ -64,9 +64,9 @@ export default class MixCapsuleHttpClient {
     }
   }
 
-  static async requestToken(token) {
+  static async requestToken(code) {
     return MixCapsuleHttpClient.makeRequest("/token/request/", "POST", {
-      google_token: token,
+      code: code,
     });
   }
 
@@ -99,7 +99,7 @@ export default class MixCapsuleHttpClient {
     console.error("ERROR refresh token expired. Sending back to login screen");
     setTimeout(() => {
       window.location.href = "/";
-    }, 2000);
+    }, 100000);
   }
 
   getUserData() {

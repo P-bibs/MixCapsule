@@ -16,7 +16,7 @@ export default class PageRouter extends React.Component {
     const path = new URL(window.location).pathname;
     if (path === "/") {
       this.page = <HomePage />;
-    } else if (path === "/app") {
+    } else if (path === "/app" || path === "/app/redirect") {
       this.page = <AppPage />;
     } else {
       this.page = <body></body>;
