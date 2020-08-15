@@ -59,20 +59,20 @@ const PlaylistsPanel = ({ httpClient }) => {
     asyncWrapper();
   }, []);
 
-  if (isLoading) {
-    return <CircularProgress />;
-  } else {
-    return (
-      <div className="w-full flex-grow flex flex-col">
-        <h2 className="mb-5">Mix Capsule History</h2>
+  return (
+    <div className="w-full flex-grow flex flex-col">
+      <h2 className="mb-5">Mix Capsule History</h2>
+      {isLoading ? (
+        <CircularProgress className="w-full m-auto" />
+      ) : (
         <div className="w-full flex-grow px-4 overflow-y-auto divide-y">
           {playlistDetails.map((playlist, i) => (
             <PlaylistListItem key={i} playlist={playlist} />
           ))}
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 };
 
 PlaylistsPanel.propTypes = {

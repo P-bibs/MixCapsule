@@ -85,12 +85,12 @@ const OptionsPanel = ({ httpClient }) => {
     });
   };
 
-  if (isLoading) {
-    return <CircularProgress />;
-  } else {
-    return (
-      <>
-        <h2>MixCapsule Options</h2>
+  return (
+    <div className="w-full flex-grow flex flex-col">
+      <h2>MixCapsule Options</h2>
+      {isLoading ? (
+        <CircularProgress className="w-full m-auto" />
+      ) : (
         <div className="w-full my-auto flex-grow flex flex-col items-center justify-center">
           <div className="h-24 text-center">
             <div className="mb-2">Number of Songs: </div>
@@ -136,9 +136,9 @@ const OptionsPanel = ({ httpClient }) => {
             Apply
           </Button>
         </div>
-      </>
-    );
-  }
+      )}
+    </div>
+  );
 };
 
 OptionsPanel.propTypes = {

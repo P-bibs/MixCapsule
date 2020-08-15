@@ -67,12 +67,12 @@ const DashboardPanel = ({ httpClient }) => {
     });
   };
 
-  if (!spotifyAuthenticationDataReady) {
-    return <CircularProgress />;
-  } else {
-    return (
-      <>
-        <h2>Dashboard</h2>
+  return (
+    <div className="w-full flex-grow flex flex-col">
+      <h2>Dashboard</h2>
+      {!spotifyAuthenticationDataReady ? (
+        <CircularProgress className="w-full m-auto" />
+      ) : (
         <div className="w-full lg:h-full divide-y flex flex-col">
           <div className="w-full lg:h-full flex-shrink px-4">
             <h3 className="lg:h-full lg:flex py-4 flex-col justify-center">
@@ -84,7 +84,7 @@ const DashboardPanel = ({ httpClient }) => {
               <h3 className="mt-3">Your most recent playlist:</h3>
               <div className="flex-grow flex flex-col justify-center items-center">
                 {recentPlaylist === undefined ? (
-                  <CircularProgress />
+                  <CircularProgress className="my-4" />
                 ) : recentPlaylist === null ? (
                   <div className="py-4">
                     You haven't created any playlists yet
@@ -120,9 +120,9 @@ const DashboardPanel = ({ httpClient }) => {
             </div>
           </div>
         </div>
-      </>
-    );
-  }
+      )}
+    </div>
+  );
 };
 
 DashboardPanel.propTypes = {

@@ -13,7 +13,7 @@ const ManualPanel = ({ httpClient }) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full flex-grow flex flex-col">
       <h2 className="mb-3">Manual Playlist Creation</h2>
       <div className="w-full flex-grow flex flex-col items-center justify-center">
         <p className="mx-5 mb-4 text-center">
