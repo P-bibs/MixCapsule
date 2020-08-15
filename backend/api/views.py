@@ -122,12 +122,19 @@ class ProfileDetailView(APIView):
             raise Exception("Error: jwt token doesn't correspond to any user")
 
 
-class PlaylistListCreateView(ListCreateAPIView):
-    queryset = GeneratedPlaylist.objects.all()
-    serializer_class = GeneratedPlaylistSerializer
-
+class PlaylistListCreateView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        if user is not None:
+            playlists = GeneratedPlaylist.objects.filter(user=user)
+            return Response(
+                GeneratedPlaylistSerializer(playlists, many=True).data, status=200
+            )
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
 
     def post(self, request):
         user = request.user
