@@ -69,7 +69,9 @@ class TokenRequestView(APIView):
 
         # If this is a new user, create an entry for them
         if len(user) == 0:
-            new_user = User.objects.create_user(user_id, user_email, "",)
+            new_user = User.objects.create_user(
+                user_id, user_email, "", first_name=user_info.display_name
+            )
             new_user.set_unusable_password()
             new_user.save()
 
