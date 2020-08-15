@@ -7,9 +7,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
-import { ToastContainer, toast } from "react-toastify";
-
-import { useGetPlaylistOptions } from "../../hooks/hooks";
+import { toast } from "react-toastify";
 
 const OPTION_FIELDS = {
   NUMBER_SONGS: "NUMBER_SONGS",

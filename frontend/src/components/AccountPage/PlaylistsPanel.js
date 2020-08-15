@@ -29,8 +29,6 @@ export const PlaylistListItem = ({ playlist }) => (
 const PlaylistsPanel = ({ httpClient }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const [spotifyAuthRequired, setSpotifyAuthRequired] = useState(null);
-
   const [playlistDetails, setPlaylistDetails] = useState([]);
   useEffect(() => {
     setIsLoading(true);
@@ -41,13 +39,6 @@ const PlaylistsPanel = ({ httpClient }) => {
         spotifyAuthenticationData,
         r2,
       ] = await httpClient.getSpotifyAuthenticationData();
-
-      if (spotifyAuthenticationData.spotify_auth_required) {
-        setSpotifyAuthRequired(true);
-        return;
-      } else {
-        setSpotifyAuthRequired(false);
-      }
 
       // Initialize Spotify http client
       const token = spotifyAuthenticationData.access_token;
@@ -70,8 +61,6 @@ const PlaylistsPanel = ({ httpClient }) => {
 
   if (isLoading) {
     return <CircularProgress />;
-  } else if (spotifyAuthRequired === true) {
-    return <div>Please authenticate with Spotify</div>;
   } else {
     return (
       <div className="w-full flex-grow flex flex-col">

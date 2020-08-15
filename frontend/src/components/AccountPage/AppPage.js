@@ -3,7 +3,6 @@ import { CircularProgress } from "@material-ui/core";
 import { IoLogoGithub } from "react-icons/io";
 import { ToastContainer } from "react-toastify";
 
-import * as constants from "../../constants";
 import MixCapsuleHttpClient from "../../httpClients/MixCapsuleHttpClient";
 import PlaylistsPanel from "./PlaylistsPanel";
 import OptionsPanel from "./OptionsPanel";
