@@ -12,7 +12,7 @@ export const PlaylistListItem = ({ playlist }) => (
       />
       <div className="ml-3 my-auto">
         <a
-          className="no-underline hover:underline font-bold text-lg"
+          className="font-bold text-lg"
           href={playlist.external_urls.spotify}
           target="_blank"
           rel={"noreferrer"}
