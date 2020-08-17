@@ -1,7 +1,7 @@
 # MixCapsule
 A website to make time capsule playlists of your most played Spotify tracks for the last month!
 <a href="https://mixcapsule.paulbiberstein.me">
-<img width="300" href="https://mixcapsule.paulbiberstein.me" src="https://paulbiberstein.me/resources/MixCapsuleLogo.png"></a>
+<img width="300" src="https://paulbiberstein.me/resources/MixCapsuleLogo.png"></a>
 
 **[See the live version here](https://mixcapsule.paulbiberstein.me)**
 
