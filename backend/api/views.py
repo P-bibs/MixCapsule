@@ -132,6 +132,20 @@ class PlaylistListCreateView(APIView):
         user = request.user
         if user is not None:
             playlists = GeneratedPlaylist.objects.filter(user=user)
+            user.spotifyapidata.request_refresh()
+            token = user.spotifyapidata.access_token
+            spotify = tk.Spotify(token)
+
+            # If the user has deleted a playlist, remove it from the database
+            for playlist in playlists:
+                if not spotify.playlist_is_following(
+                    playlist.spotify_id, [user.username]
+                )[0]:
+                    playlist.unfollow()
+                    playlist.delete()
+
+            playlists = GeneratedPlaylist.objects.filter(user=user)
+
             return Response(
                 GeneratedPlaylistSerializer(playlists, many=True).data, status=200
             )
@@ -153,6 +167,29 @@ class PlaylistListCreateView(APIView):
                 return Response(
                     {"error": "Server Error: Failed to create playlist"}, status=500
                 )
+        else:
+            raise Exception("Error: jwt token doesn't correspond to any user")
+
+
+class PlaylistDestroyView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        user = request.user
+        if user is not None:
+            try:
+                playlist = GeneratedPlaylist.objects.get(user=user, spotify_id=id)
+            except GeneratedPlaylist.DoesNotExist as e:
+                return Response(
+                    "Playlist does not exist or belongs to different user", status=400
+                )
+
+            if playlist.unfollow():
+                playlist.delete()
+                return Response({}, status=200)
+            else:
+                return Response("Error deleting playlist off spotify", status=500)
         else:
             raise Exception("Error: jwt token doesn't correspond to any user")
 

@@ -185,6 +185,7 @@ const HomePage = () => {
               <li>View content you have recently played</li>
               <li>View your top artists and content</li>
               <li>View your email address</li>
+              <li>View your private playlists</li>
               <li>Create, edit, and follow your private playlists</li>
             </ul>
             <p>

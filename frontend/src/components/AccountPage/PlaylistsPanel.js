@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { CircularProgress } from "@material-ui/core";
+import { IoIosTrash } from "react-icons/io";
 import SpotifyWebApi from "spotify-web-api-js";
 
-export const PlaylistListItem = ({ playlist }) => (
+export const PlaylistListItem = ({ playlist, deletePlaylist }) => (
   <div className="w-full h-24 p-3 flex flex-row items-center justify-between">
     <div className="h-full flex flex-row">
       <img
@@ -22,7 +23,10 @@ export const PlaylistListItem = ({ playlist }) => (
         <div>Tracks: {playlist.tracks.total}</div>
       </div>
     </div>
-    <div className="mr-3">{playlist.public ? "Public" : "Private"}</div>
+    <div className="mr-3 flex flex-col items-end">
+      <div className="">{playlist.public ? "Public" : "Private"}</div>
+      <IoIosTrash className="cursor-pointer" onClick={deletePlaylist} />
+    </div>
   </div>
 );
 
@@ -49,7 +53,7 @@ const PlaylistsPanel = ({ httpClient }) => {
       const _playlistDetails = await Promise.all(
         playlistData.map((playlist) =>
           spotifyClient.getPlaylist(playlist.spotify_id, {
-            fields: "external_urls,images,name,public,tracks.total",
+            fields: "external_urls,images,name,public,tracks.total,id",
           })
         )
       );
@@ -59,6 +63,17 @@ const PlaylistsPanel = ({ httpClient }) => {
     asyncWrapper();
   }, []);
 
+  const deletePlaylist = (id) => {
+    httpClient.deletePlaylist(id).then(([_, response]) => {
+      if (response.status === 200) {
+        // If we delete the playlist from the database, delete it on the frontend too
+        setPlaylistDetails((state) =>
+          state.filter((playlist) => playlist.id !== id)
+        );
+      }
+    });
+  };
+
   return (
     <div className="w-full flex-grow flex flex-col">
       <h2 className="mb-5">Mix Capsule History</h2>
@@ -67,7 +82,11 @@ const PlaylistsPanel = ({ httpClient }) => {
       ) : (
         <div className="w-full flex-grow px-4 overflow-y-auto divide-y">
           {playlistDetails.map((playlist, i) => (
-            <PlaylistListItem key={i} playlist={playlist} />
+            <PlaylistListItem
+              key={i}
+              playlist={playlist}
+              deletePlaylist={() => deletePlaylist(playlist.id)}
+            />
           ))}
         </div>
       )}

@@ -28,8 +28,8 @@ const DashboardPanel = ({ httpClient }) => {
   const [recentPlaylist, setRecentPlaylist] = useState(undefined);
   useEffect(() => {
     const asyncWrapper = async () => {
-      // Only proceed if we have auth data
-      if (!spotifyAuthenticationDataReady) {
+      // Only proceed if we have auth data and recentPlaylist is undefined
+      if (!spotifyAuthenticationDataReady || recentPlaylist !== undefined) {
         return;
       }
       const [playlistData, r1] = await httpClient.getPlaylistList();
@@ -48,14 +48,14 @@ const DashboardPanel = ({ httpClient }) => {
       const playlistDetails = await Promise.all(
         playlistData.map((playlist) =>
           spotifyClient.getPlaylist(playlist.spotify_id, {
-            fields: "external_urls,images,name,public,tracks.total",
+            fields: "external_urls,images,name,public,tracks.total,id",
           })
         )
       );
       setRecentPlaylist(playlistDetails[playlistDetails.length - 1]);
     };
     asyncWrapper();
-  }, [spotifyAuthenticationDataReady]);
+  }, [spotifyAuthenticationDataReady, recentPlaylist]);
 
   const [manualCreationLoading, setManualCreationLoading] = useState(false);
   const manualPlaylistCreation = () => {
@@ -64,6 +64,15 @@ const DashboardPanel = ({ httpClient }) => {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
+    });
+  };
+
+  const deletePlaylist = (id) => {
+    httpClient.deletePlaylist(id).then(([_, response]) => {
+      if (response.status === 200) {
+        // If we delete the playlist from the database, delete it on the frontend too
+        setRecentPlaylist(undefined);
+      }
     });
   };
 
@@ -92,7 +101,10 @@ const DashboardPanel = ({ httpClient }) => {
                 ) : (
                   <>
                     {console.log(recentPlaylist)}
-                    <PlaylistListItem playlist={recentPlaylist} />
+                    <PlaylistListItem
+                      playlist={recentPlaylist}
+                      deletePlaylist={() => deletePlaylist(recentPlaylist.id)}
+                    />
                   </>
                 )}
               </div>

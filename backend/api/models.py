@@ -1,8 +1,9 @@
 import datetime
+
+import tekore as tk
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-import datetime
 
 import api.spotify_wrapper as spotify_wrapper
 
@@ -140,3 +141,15 @@ class GeneratedPlaylist(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s playlist {self.spotify_id}"
+
+    def unfollow(self):
+        try:
+            self.user.spotifyapidata.request_refresh()
+            spotify = tk.Spotify(self.user.spotifyapidata.access_token)
+            spotify.playlist_unfollow(self.spotify_id)
+            return True
+        except tk.NotFound as e:
+            print("Error while unfollowing user's playlist")
+            print(e)
+            return False
+

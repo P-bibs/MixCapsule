@@ -130,6 +130,10 @@ export default class MixCapsuleHttpClient {
     return this.makeAuthenticatedRequest("/user/playlists/", "POST");
   }
 
+  deletePlaylist(id) {
+    return this.makeAuthenticatedRequest(`/user/playlists/${id}/`, "DELETE");
+  }
+
   getOptions() {
     return this.makeAuthenticatedRequest("/user/options/");
   }

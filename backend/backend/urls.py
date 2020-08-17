@@ -25,6 +25,7 @@ urlpatterns = [
     path("user/", views.UserDetailView.as_view()),
     path("user/profile/", views.ProfileDetailView.as_view()),
     path("user/playlists/", views.PlaylistListCreateView.as_view()),
+    path("user/playlists/<str:id>/", views.PlaylistDestroyView.as_view()),
     path("user/options/", views.PlaylistOptionsDetailView.as_view()),
     path("user/spotify-authentication/", views.SpotifyAuthenticationView.as_view()),
     path("token/request/", views.TokenRequestView.as_view()),
