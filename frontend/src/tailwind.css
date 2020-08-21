@@ -14,10 +14,6 @@ h3 {
 
 @tailwind components;
 
-.card {
-  @apply rounded shadow-lg;
-}
-
 .Toastify__toast {
   @apply px-4 py-3 mx-auto bg-purple-400 border-t-4 border-purple-700 rounded-b-md shadow-md;
 }

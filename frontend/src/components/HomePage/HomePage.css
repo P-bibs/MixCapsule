@@ -1,0 +1,57 @@
+.viz-bar {
+  width: 20px;
+}
+
+@keyframes viz0 {
+  0% {
+    height: 200px;
+  }
+  25% {
+    height: 140px;
+  }
+  50% {
+    height: 210px;
+  }
+  75% {
+    height: 290px;
+  }
+  100% {
+    height: 200px;
+  }
+}
+
+@keyframes viz1 {
+  0% {
+    height: 170px;
+  }
+  25% {
+    height: 280px;
+  }
+  50% {
+    height: 250px;
+  }
+  75% {
+    height: 265px;
+  }
+  100% {
+    height: 170px;
+  }
+}
+
+@keyframes viz2 {
+  0% {
+    height: 150px;
+  }
+  25% {
+    height: 190px;
+  }
+  50% {
+    height: 160px;
+  }
+  75% {
+    height: 240px;
+  }
+  100% {
+    height: 150px;
+  }
+}
