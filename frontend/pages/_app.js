@@ -2,7 +2,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
 import "../styles/HomePage.css";
-import "../styles/tailwind.output.css";
+import "../styles/tailwind.css";
 
 function MyApp({ Component, pageProps }) {
   return (

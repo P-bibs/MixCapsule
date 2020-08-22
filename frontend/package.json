@@ -4,11 +4,7 @@
   "private": true,
   "homepage": "https://mixcapsule.paulbiberstein.me",
   "scripts": {
-    "build:tailwind": "tailwind build styles/tailwind.css -o styles/tailwind.output.css",
-    "watch:tailwind": "chokidar 'styles/**/*.css' --ignore styles/tailwind.output.css -c 'npm run build:tailwind'",
-    "dev": "npm-run-all build:tailwind --parallel watch:tailwind dev:next",
-    "dev:next": "next dev",
-    "prebuild": "NODE_ENV=production run-s build:tailwind",
+    "dev": "next",
     "build": "next build",
     "start": "next start"
   },
@@ -23,7 +19,6 @@
     "react-icons": "^3.10.0",
     "react-toastify": "^6.0.8",
     "spotify-web-api-js": "^1.5.0",
-    "tailwindcss": "^1.6.1",
     "react-scripts": "3.4.1"
   },
   "devDependencies": {
@@ -38,7 +33,10 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.2",
     "eslint-plugin-standard": "^4.0.1",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "postcss-flexbugs-fixes": "4.2.1",
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "^1.6.0"
   },
   "eslintConfig": {
     "extends": "react-app"
