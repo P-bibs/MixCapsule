@@ -1,10 +1,10 @@
 # [MixCapsule](https://mixcapsule.paulbiberstein.me)
 
-<div style="text-align: center">
+<p align="center">
 <a href="https://mixcapsule.paulbiberstein.me">
 <img src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif">
 </a>
-</div>
+</p>
 
 **[See the live version here](https://mixcapsule.paulbiberstein.me)**
 
