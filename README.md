@@ -1,7 +1,7 @@
 # MixCapsule
 A website to make time capsule playlists of your most played Spotify tracks for the last month!
 <a href="https://mixcapsule.paulbiberstein.me">
-<img width="300" src="https://paulbiberstein.me/resources/MixCapsuleLogo.png"></a>
+<img src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif"></a>
 
 **[See the live version here](https://mixcapsule.paulbiberstein.me)**
 
@@ -13,12 +13,12 @@ Once you login with Spotify, Mix Capsule will deposit a playlist in your library
 
 # Tech Stack
 ## Frontend
-Mix Capsule utilizes [React](https://reactjs.org/) on the frontend with [Tailwind](https://material-ui.com/) for styling, [Material UI](https://material-ui.com/) for buttons, [Ionicons](https://ionicons.com/) for icons, and [Drift](https://www.drift.com/) for live chat.
+Mix Capsule utilizes [NextJS](https://nextjs.org/) on the frontend with [Tailwind](https://material-ui.com/) for styling, [Material UI](https://material-ui.com/) for buttons, [Ionicons](https://ionicons.com/) for icons, and [Drift](https://www.drift.com/) for live chat.
 ## Backend
 Mix Capsule uses [Django](https://www.djangoproject.com/) and [Django Rest Framework](https://www.django-rest-framework.org/) on the backend with an sqlite database.
 
 ## Deployment
-The frontend and backend are deployed to a [DigitalOcean](https://www.digitalocean.com/) droplet running an Apache webserver. [Apache](https://httpd.apache.org/) serves the React app as static files and runs a WSGI proxy to send requests to the Django backend. Additionally, monthly playlist creation is scheduled by systemd timers, which are preferable over cron jobs since they handle system down-time gracefully.
+The frontend is deployed with [Vercel](https://vercel.com/). The backend is deployed to a [DigitalOcean](https://www.digitalocean.com/) droplet running an Apache webserver. [Apache](https://httpd.apache.org/) runs a WSGI proxy to send requests to Django. Additionally, monthly playlist creation is scheduled by systemd timers, which are preferable over cron jobs since they handle system down-time gracefully.
 
 ## API interactions
 When interacting with the Spotify API, Mix Capsule uses the "authorization code" flow so that the backend can save a refresh token and continue to act on the user's behalf even after they've left the site. This is what allows monthly playlist creation with no intervention from the user. 
