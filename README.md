@@ -1,9 +1,13 @@
-# MixCapsule
+# [MixCapsule](https://mixcapsule.paulbiberstein.me)
 A website to make time capsule playlists of your most played Spotify tracks for the last month!
 <a href="https://mixcapsule.paulbiberstein.me">
-<img src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif"></a>
+<img style="width: 100%" src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif"></a>
 
 **[See the live version here](https://mixcapsule.paulbiberstein.me)**
+
+![Uptime Robot ratio (30 days)](https://img.shields.io/uptimerobot/ratio/m785807715-5f834be838a5e5f36cee8947?label=uptime%20%2Fmonth)
+![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/P-bibs/MixCapsule)
+![GitHub stars](https://img.shields.io/github/stars/P-bibs/MixCapsule?style=social)
 
 # About
 When I started college, I got the advice from a good friend to make CDs of all the songs I listened to each semester so I could listen to them years down the line and be transported back. It was a great idea (after I decided to exchange "CDs" for "playlists"), but I had a hard time remembering to keep tracks of songs as my tastes changed, and I quickly started finding holes in my self-recorded music history. To solve that problem, I created Mix Capsule.
