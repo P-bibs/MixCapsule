@@ -1,12 +1,18 @@
 # [MixCapsule](https://mixcapsule.paulbiberstein.me)
-A website to make time capsule playlists of your most played Spotify tracks for the last month!
+
+<div style="text-align: center">
 <a href="https://mixcapsule.paulbiberstein.me">
-<img style="width: 100%" src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif"></a>
+<img src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif">
+</a>
+</div>
 
 **[See the live version here](https://mixcapsule.paulbiberstein.me)**
 
+A website to make time capsule playlists of your most played Spotify tracks for the last month!
+
 ![Uptime Robot ratio (30 days)](https://img.shields.io/uptimerobot/ratio/m785807715-5f834be838a5e5f36cee8947?label=uptime%20%2Fmonth)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/P-bibs/MixCapsule)
+![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/P-bibs/MixCapsule)
 ![GitHub stars](https://img.shields.io/github/stars/P-bibs/MixCapsule?style=social)
 
 # About
