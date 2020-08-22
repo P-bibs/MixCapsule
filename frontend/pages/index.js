@@ -1,10 +1,11 @@
 import Head from "next/head";
-import React, { useState, useEffect } from "react";
-import { IoIosAlarm, IoMdSettings } from "react-icons/io";
+import React, { useEffect, useState } from "react";
 import { FiZap } from "react-icons/fi";
+import { IoIosAlarm, IoMdSettings } from "react-icons/io";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import * as constants from "../constants";
 import { generateRedirectUri } from "../httpClients/SpotifyHttpClient";
-import { Header, Footer } from "../components/common";
 
 // Tailwind info icon svg
 const InfoIcon = () => (
