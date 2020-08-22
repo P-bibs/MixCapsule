@@ -1,12 +1,10 @@
+import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { IoIosAlarm, IoMdSettings } from "react-icons/io";
 import { FiZap } from "react-icons/fi";
-import * as constants from "../../constants";
-import { generateRedirectUri } from "../../httpClients/SpotifyHttpClient";
-import spotifyIcon from "../../assets/Spotify_Icon_RGB_White.png";
-import audioPlayerIllustration from "../../assets/AudioPlayer.png";
-import { Header, Footer } from "../common";
-import "./HomePage.css";
+import * as constants from "../constants";
+import { generateRedirectUri } from "../httpClients/SpotifyHttpClient";
+import { Header, Footer } from "../components/common";
 
 // Tailwind info icon svg
 const InfoIcon = () => (
@@ -97,23 +95,24 @@ const HomePage = () => {
         <img
           className="mr-2 object-contain"
           style={{ width: "21px" }}
-          src={spotifyIcon}
+          src="Spotify_Icon_RGB_White.png"
         />
         <div className="text-sm text-white">Login with Spotify</div>
       </button>
     );
   };
 
-  const [numVizBars, setNumVizBars] = useState(
-    Math.floor(
-      Math.max(
-        document.documentElement.clientWidth || 0,
-        window.innerWidth || 0
-      ) / vizBarWidth
-    )
-  );
+  const [numVizBars, setNumVizBars] = useState(0);
 
   useEffect(() => {
+    setNumVizBars(
+      Math.floor(
+        Math.max(
+          document.documentElement.clientWidth || 0,
+          window.innerWidth || 0
+        ) / vizBarWidth
+      )
+    );
     window.addEventListener("resize", () => {
       setNumVizBars(
         Math.floor(
@@ -128,6 +127,9 @@ const HomePage = () => {
 
   return (
     <div id="HomePage" className="m-0 p-0 flex flex-col">
+      <Head>
+        <title>Mix Capsule</title>
+      </Head>
       <Header>
         <SpotifyButton>Sign in with Google</SpotifyButton>
       </Header>
@@ -159,7 +161,7 @@ const HomePage = () => {
             </div>
             <img
               className="w-1/3 flex-grow object-contain"
-              src={audioPlayerIllustration}
+              src="AudioPlayer.png"
             />
           </div>
         </div>

@@ -3,18 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://mixcapsule.paulbiberstein.me",
+  "scripts": {
+    "build:tailwind": "tailwind build styles/tailwind.css -o styles/tailwind.output.css",
+    "watch:tailwind": "chokidar 'styles/**/*.css' --ignore styles/tailwind.output.css -c 'npm run build:tailwind'",
+    "dev": "npm-run-all build:tailwind --parallel watch:tailwind dev:next",
+    "dev:next": "next dev",
+    "prebuild": "NODE_ENV=production run-s build:tailwind",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "chokidar-cli": "^2.1.0",
     "npm-run-all": "^4.1.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "next": "9.5.2",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-icons": "^3.10.0",
-    "react-scripts": "3.4.1",
     "react-toastify": "^6.0.8",
     "spotify-web-api-js": "^1.5.0",
-    "tailwindcss": "^1.6.1"
+    "tailwindcss": "^1.6.1",
+    "react-scripts": "3.4.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -29,16 +39,6 @@
     "eslint-plugin-react-hooks": "^4.0.2",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^2.0.5"
-  },
-  "scripts": {
-    "build:tailwind": "tailwind build src/tailwind.css -o src/tailwind.output.css",
-    "watch:tailwind": "chokidar 'src/**/*.css' 'src/**/*.scss' --ignore src/tailwind.output.css -c 'npm run build:tailwind'",
-    "start": "npm-run-all build:tailwind --parallel watch:tailwind start:react",
-    "start:react": "react-scripts start",
-    "prebuild": "NODE_ENV=production run-s build:tailwind",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

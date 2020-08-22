@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { CircularProgress, Button } from "@material-ui/core";
 import SpotifyWebApi from "spotify-web-api-js";
 
-import { useSpotifyAuthenticationData } from "../../hooks/hooks";
+import { useSpotifyAuthenticationData } from "../hooks/hooks";
 import { PlaylistListItem } from "./PlaylistsPanel";
 
 /**
