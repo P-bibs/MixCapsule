@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://mixcapsule.paulbiberstein.me">
-<img src="https://paulbiberstein.me/resources/OptimizedMixCapsuleGif.gif">
+<img src="https://files.paulbiberstein.me/OptimizedMixCapsuleGif.gif">
 </a>
 </p>
 
