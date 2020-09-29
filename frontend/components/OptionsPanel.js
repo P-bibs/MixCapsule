@@ -103,7 +103,7 @@ const OptionsPanel = ({ httpClient }) => {
             />
             {validationErrors.number_songs && (
               <div className="text-sm text-red-600">
-                Must be a number from 1 to 100
+                Must be a number from 1 to 50
               </div>
             )}
           </div>
