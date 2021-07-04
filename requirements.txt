@@ -36,7 +36,7 @@ prompt-toolkit==3.0.5
 ptyprocess==0.6.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-Pygments==2.6.1
+Pygments==2.7.4
 PyJWT==1.7.1
 pylint==2.5.3
 python-dotenv==0.14.0
